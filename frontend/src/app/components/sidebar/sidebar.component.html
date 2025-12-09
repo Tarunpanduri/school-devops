@@ -1,0 +1,105 @@
+<div class="ss-body">
+  <div class="sidebar">
+    <div class="logo">
+      <img src="./logo.png" alt="SFS Logo" />
+      <div class="school-name">
+        <strong>S.F.S</strong><br />
+        <div class="user-info">
+          @if (currentUser) {
+          <div class="user-name">
+            {{ currentUser.display_name || currentUser.email }},
+          </div>
+          <div class="user-role">
+          {{ currentUser.role || 'user' }}
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+
+
+    <ul class="nav">
+      @if (isSupAdmin()) {
+      <li routerLink="/dashboard" routerLinkActive="active">
+        <mat-icon class="icon">dashboard</mat-icon> Dashboard
+      </li>
+      }
+
+      <!-- Students Dropdown -->
+      <li (click)="toggleSection('students')" class="dropdown-toggle">
+        <mat-icon class="icon">school</mat-icon> Students
+        <mat-icon class="arrow">
+          {{ isOpen.students ? 'expand_less' : 'expand_more' }}
+        </mat-icon>
+      </li>
+      @if (isOpen.students) {
+      <ul class="dropdown">
+        <li routerLink="/students-info" routerLinkActive="active">Students-Info</li>
+        <li routerLink="/attendence" routerLinkActive="active">Attendance</li>
+        <li routerLink="/fee-structure" routerLinkActive="active">Fee Structure</li>
+        <li routerLink="/homework" routerLinkActive="active">Homework</li>
+        <li routerLink="/id-cards" routerLinkActive="active">ID Cards</li>
+        <li routerLink="/academics" routerLinkActive="active">Academics</li>
+      </ul>
+      }
+
+      <!-- Teachers Dropdown -->
+      <li (click)="toggleSection('teachers')" class="dropdown-toggle">
+        <mat-icon class="icon">person</mat-icon> Teachers
+        <mat-icon class="arrow">
+          {{ isOpen.teachers ? 'expand_less' : 'expand_more' }}
+        </mat-icon>
+      </li>
+      @if (isOpen.teachers) {
+      <ul class="dropdown">
+        <li routerLink="/teachers-info" routerLinkActive="active">teachers-info</li>
+        <li routerLink="/teachersattendence" routerLinkActive="active">Attendance</li>
+        <li routerLink="/salaries" routerLinkActive="active">Salaries</li>
+      </ul>
+      }
+
+      <!-- Finance Dropdown (admin only) -->
+      @if (isAdmin()) {
+      <li (click)="toggleSection('finance')" class="dropdown-toggle">
+        <mat-icon class="icon">account_balance_wallet</mat-icon> Finance
+        <mat-icon class="arrow">
+          {{ isOpen.finance ? 'expand_less' : 'expand_more' }}
+        </mat-icon>
+      </li>
+      }
+      @if (isOpen.finance) {
+      <ul class="dropdown">
+        <li routerLink="/payments" routerLinkActive="active">Payments</li>
+        <li routerLink="/expenses" routerLinkActive="active">School Expenses</li>
+      </ul>
+      }
+
+      <!-- Static Menu Items -->
+      <li routerLink="/calendar" routerLinkActive="active">
+        <mat-icon class="icon">calendar_today</mat-icon> Calendar
+      </li>
+      <li routerLink="/time-table" routerLinkActive="active">
+        <mat-icon class="icon">schedule</mat-icon>
+        Time Table
+      </li>
+      <li routerLink="/messaging" routerLinkActive="active">
+        <mat-icon class="icon">chat</mat-icon>
+        Message
+      </li>
+      <li routerLink="/Transport" routerLinkActive="active">
+        <mat-icon class="icon">directions_bus</mat-icon> Transport
+      </li>
+      <li>
+        <mat-icon class="icon">settings</mat-icon> Settings
+      </li>
+    </ul>
+
+    <div class="logout">
+      <button (click)="logout()">
+        Log Out
+        <mat-icon class="icon" style="color: black;">logout</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

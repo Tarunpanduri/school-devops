@@ -1,0 +1,99 @@
+<h2 class="page-title">Homework</h2>
+
+<div class="filters-wrapper">
+  <!-- Left: Filters -->
+  <div class="filter-group">
+    <div class="filter-item">
+      <label for="date">Select Date:</label>
+      <input type="date" id="date" [(ngModel)]="selectedDate" class="custom-input" />
+    </div>
+
+    <div class="filter-item">
+      <label for="class">Select Class:</label>
+      <select id="class" [(ngModel)]="selectedClass" (change)="onClassChange()" class="custom-input">
+        @for (cls of classList; track cls) {
+          <option [value]="cls">{{ cls }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label for="section">Select Section:</label>
+      <select id="section" [(ngModel)]="selectedSection" class="custom-input">
+        @for (sec of sectionList; track sec) {
+          <option [value]="sec">{{ sec }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Right: Buttons -->
+  <div class="button-group-right">
+    <button class="search-btn" (click)="searchHomework()">
+      <i class="fa-solid fa-magnifying-glass"></i> Search
+    </button>
+    <button class="add-btn" (click)="openAddHomeworkModal()">
+      + Add Homework
+    </button>
+    <button class="notify-btn" (click)="notifyParents()">
+      <i class="fa-solid fa-paper-plane"></i> Notify Parents
+    </button>
+  </div>
+</div>
+
+<!-- Homework Table -->
+@if (homeworkList.length > 0) {
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Subjects</th>
+        <th>Homework</th>
+        <th>Assigned Date</th>
+        <th>Due Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (hw of homeworkList; track hw; let i = $index) {
+        <tr>
+          @if (editingIndex === i) {
+            <td><input [(ngModel)]="editedHomework.subject" class="custom-input" /></td>
+            <td><input [(ngModel)]="editedHomework.task" class="custom-input" /></td>
+            <td><input type="date" [(ngModel)]="editedHomework.assignedDate" class="custom-input" /></td>
+            <td><input type="date" [(ngModel)]="editedHomework.dueDate" class="custom-input" /></td>
+            <td class="actions">
+              <!-- Green tick SVG -->
+              <button (click)="saveHomework(i)">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="green">
+                  <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q8 0 15 1.5t14 4.5l-74 74H200v560h560v-266l80-80v346q0 33-23.5 56.5T760-120H200Zm261-160L235-506l56-56 170 170 367-367 57 55-424 424Z"/>
+                </svg>
+              </button>
+              <!-- Red cross SVG -->
+              <button (click)="cancelEdit()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="red">
+                  <path d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/>
+                </svg>
+              </button>
+            </td>
+          } @else {
+            <td>{{ hw.subject }}</td>
+            <td>{{ hw.task }}</td>
+            <td>{{ hw.assignedDate }}</td>
+            <td>{{ hw.dueDate }}</td>
+            <td class="actions">
+              <button (click)="editHomework(hw, i)">
+                <i class="fa-solid fa-pen-to-square" style="color: #2563eb; font-size: 18px;"></i>
+              </button>
+              <button (click)="deleteHomework(hw)">
+                <i class="fa-solid fa-trash" style="color: red; font-size: 18px;"></i>
+              </button>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  <div class="no-data">No homework found for this date and grade.</div>
+}
+

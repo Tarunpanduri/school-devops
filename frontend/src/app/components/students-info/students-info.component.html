@@ -1,0 +1,138 @@
+<div class="container">
+
+  <button (click)="openForm()" class="add-btn">+ Add New Student</button>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <div>
+      <label>Select Class</label>
+      <select [(ngModel)]="selectedFilterClass" (change)="onClassChange($event)">
+        <option value="">All Classes</option>
+        @for (c of classes; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label>Select Section</label>
+      <select [(ngModel)]="selectedFilterSection" (change)="onSectionChange($event)">
+        <option value="">All Sections</option>
+        @for (s of filterSections; track s) {
+          <option [value]="s">{{ s }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label>Search</label>
+      <input type="text" placeholder="Adm No / Name" [(ngModel)]="searchTerm" (input)="applyFilters()">
+    </div>
+  </div>
+
+  <!-- FORM MODAL -->
+  @if (showForm) {
+    <div class="form-modal">
+      <div class="form-content">
+        @if (isViewMode) {
+          <h3>View Student</h3>
+        }
+        @if (isEditMode) {
+          <h3>Edit Student</h3>
+        }
+        @if (!isEditMode && !isViewMode) {
+          <h3>Add Student</h3>
+        }
+        <form #studentForm="ngForm" (ngSubmit)="submitForm(studentForm)">
+          <div class="form-grid">
+            <input type="text" placeholder="Admission Number" name="admissionNumber"
+              [(ngModel)]="selectedStudent.admissionNumber" [readonly]="isViewMode" required>
+              <input type="text" placeholder="First Name" name="firstName"
+                [(ngModel)]="selectedStudent.firstName" [readonly]="isViewMode" required>
+                <input type="text" placeholder="Last Name" name="lastName"
+                  [(ngModel)]="selectedStudent.lastName" [readonly]="isViewMode" required>
+                  <select name="gender" [(ngModel)]="selectedStudent.gender" [disabled]="isViewMode" required>
+                    <option value="" disabled>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <input type="date" placeholder="Date of Birth" name="dateOfBirth"
+                    [(ngModel)]="selectedStudent.dateOfBirth" [readonly]="isViewMode" required>
+                    <input type="text" placeholder="Current Class" name="currentClass"
+                      [(ngModel)]="selectedStudent.currentClass" [readonly]="isViewMode" required>
+                      <input type="text" placeholder="Current Section" name="currentSection"
+                        [(ngModel)]="selectedStudent.currentSection" [readonly]="isViewMode" required>
+                        <input type="text" placeholder="Phone Number" name="phoneNumber"
+                          [(ngModel)]="selectedStudent.phoneNumber" [readonly]="isViewMode">
+                          <input type="email" placeholder="Email" name="email"
+                            [(ngModel)]="selectedStudent.email" [readonly]="isViewMode">
+                            <input type="text" placeholder="Place" name="Place"
+                              [(ngModel)]="selectedStudent.Place" [readonly]="isViewMode">
+                              <input type="text" placeholder="Fee" name="fee"
+                                [(ngModel)]="selectedStudent.fee" [readonly]="isViewMode">
+                                <input type="text" placeholder="Father's Name" name="fatherName"
+                                  [(ngModel)]="selectedStudent.fatherName" [readonly]="isViewMode">
+                                </div>
+                                @if (!isViewMode) {
+                                  <button type="submit" [disabled]="!studentForm.valid">
+                                    {{ isEditMode ? 'Update' : 'Submit' }}
+                                  </button>
+                                }
+                                <button type="button" (click)="closeForm()" class="close-btn">Close</button>
+                              </form>
+                            </div>
+                          </div>
+                        }
+
+                        <!-- STUDENT TABLE -->
+                        @if (filteredStudents.length > 0) {
+                          <table class="student-table">
+                            <thead>
+                              <tr>
+                                <th>Adm No</th>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Section</th>
+                                <th>DOB</th>
+                                <th>Gender</th>
+                                <th>Father Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Place</th>
+                                <th>Fee</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @for (student of filteredStudents; track student) {
+                                <tr>
+                                  <td>{{ student.admissionNumber }}</td>
+                                  <td>{{ student.firstName }} {{ student.lastName }}</td>
+                                  <td>{{ student.currentClass }}</td>
+                                  <td>{{ student.currentSection }}</td>
+                                  <td>{{ student.dateOfBirth }}</td>
+                                  <td>{{ student.gender }}</td>
+                                  <td>{{ student.fatherName }}</td>
+                                  <td>{{ student.phoneNumber }}</td>
+                                  <td>{{ student.email }}</td>
+                                  <td>{{ student.Place }}</td>
+                                  <td>{{ student.fee }}</td>
+                                  <td>
+                                    <button (click)="viewDetails(student)">
+                                      <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                    <button (click)="editStudent(student)">
+                                      <i class="fa-light fa-pen-to-square"></i>
+                                    </button>
+                                    <button (click)="deleteStudent(student)">
+                                      <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                  </td>
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        }
+
+                      </div>

@@ -1,0 +1,93 @@
+<div class="attendance-container">
+  <!-- Top Controls -->
+  <div class="controls">
+    <label>
+      Select Month:
+      <input type="month" [(ngModel)]="selectedMonth" (change)="updateDaysInMonth()" />
+    </label>
+
+    <label>
+      Select Department:
+      <select [(ngModel)]="selectedDepartment">
+        <option value="">-- Select --</option>
+        @for (dept of departmentList; track dept) {
+          <option [value]="dept">{{ dept }}</option>
+        }
+      </select>
+    </label>
+
+    <button (click)="loadTeachers()" class="search-btn">Search</button>
+  </div>
+
+
+  <!-- Attendance Table -->
+  @if (teachers.length > 0) {
+    <div class="table-wrapper">
+      <table class="attendance-table">
+        <thead>
+          <tr>
+            <th class="sticky-col">Teacher ID</th>
+            <th class="sticky-col-2">Name</th>
+            @for (day of days; track day) {
+              <th>{{ day }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (teacher of teachers; track teacher) {
+            <tr>
+              <td class="sticky-col">{{ teacher.teacherId }}</td>
+              <td class="sticky-col-2">{{ teacher.firstName }} {{ teacher.lastName }}</td>
+              @for (day of days; track day) {
+                <td
+            [ngClass]="{
+              'locked-present': isCheckboxDisabled(teacher.id, day) && attendanceData[teacher.id][day] && isToday(day),
+              'locked-absent': isCheckboxDisabled(teacher.id, day) && !attendanceData[teacher.id][day] && isToday(day),
+              'locked-frozen': !isToday(day)
+            }"
+                  >
+                  <div
+                    class="attendance-cell"
+              [ngClass]="{
+                'present': attendanceData[teacher.id][day] === true && isToday(day),
+                'absent': attendanceData[teacher.id][day] === false && isToday(day),
+                'frozen-present': attendanceData[teacher.id][day] === true && !isToday(day),
+                'frozen-absent': attendanceData[teacher.id][day] === false && !isToday(day),
+                'frozen': attendanceData[teacher.id][day] === null || attendanceData[teacher.id][day] === undefined
+              }"
+                    (click)="markPresent(teacher.id, day, $event)"
+                    (dblclick)="markAbsent(teacher.id, day, $event)"
+                    (click)="trackClick(teacher.id, day)"
+                    >
+                    <input
+                      type="checkbox"
+                      [checked]="attendanceData[teacher.id][day] === true"
+                      [disabled]="isCheckboxDisabled(teacher.id, day)"
+                      />
+                    </div>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    @if (teachers.length > 0) {
+      <button (click)="submitAttendance()" class="submit-btn">
+        Submit Attendance
+      </button>
+    }
+
+    <!-- Modal -->
+    @if (modalVisible) {
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <h3>{{ modalTitle }}</h3>
+          <p>{{ modalMessage }}</p>
+          <button (click)="modalVisible = false" class="close-btn">Close</button>
+        </div>
+      </div>
+    }
+  </div>

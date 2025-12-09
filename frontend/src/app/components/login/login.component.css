@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-light: #fff;
+    --accent: #4caf50;
+    --border-radius: 16px;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+    --text-light: #6b7280;
+}
+
+html, body, input, button, label, h2, form, a {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+body {
+    background: linear-gradient(to right, #b1d44d, #94c048);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+.login-wrapper {
+    display: flex;
+    max-width: 100vw;
+    height: 100vh;
+    margin: 0 auto;
+    background: var(--primary-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.login-left {
+    flex: 1 1 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f6f8fa;
+    min-width: 0;
+    padding: 0;
+}
+
+.login-left .logo img {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    display: block;
+}
+
+.login-right {
+    flex: 1 1 50%;
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #111827;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #374151;
+}
+
+input[type="email"],
+input[type="password"] {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #bdbdbd;
+    font-size: 15px;
+    background: #fff;
+    outline: none;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: var(--accent);
+}
+
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 8px;
+}
+
+.form-footer a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.primary-btn {
+    padding: 12px;
+    border: none;
+    background-color: #111827;
+    color: #fff;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+}

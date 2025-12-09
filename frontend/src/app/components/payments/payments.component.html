@@ -1,0 +1,355 @@
+<div class="payments-container">
+  <h2>Payments</h2>
+
+  <form [formGroup]="searchForm" class="search-form" (ngSubmit)="onSearch()">
+    <label>
+      Student ID :
+      <input formControlName="admissionNumber" placeholder="ADM001" />
+    </label>
+
+    <label>
+      Select Year :
+      <select formControlName="year">
+        @for (year of years; track year) {
+          <option>{{ year }}</option>
+        }
+      </select>
+    </label>
+
+    <button type="submit">Search</button>
+  </form>
+
+  <!-- Student Details -->
+  @if (selectedStudent) {
+    <div class="student-details-box">
+      <p><strong>Student Name:</strong> {{ selectedStudent.firstName }} {{ selectedStudent.lastName }}</p>
+      <p><strong>Class & Section:</strong> {{ selectedStudent.currentClass }} {{ selectedStudent.currentSection }}</p>
+      <p><strong>Gender:</strong> {{ selectedStudent.gender }}</p>
+      <p><strong>Phone Number:</strong> {{ selectedStudent.phoneNumber }}</p>
+      <p><strong>Father Name:</strong> {{ selectedStudent.fatherName }}</p>
+    </div>
+  }
+  <!-- Fee Summary Block: Total Fee and Due Fee (shown after Student Details) -->
+  @if (selectedStudent) {
+    <div class="fee-summary-row">
+      <div class="fee-tile total-fee">
+        Total Fee:
+        <span>₹{{ tuitionFeeTotal }}</span>
+      </div>
+      <div class="fee-tile due-fee">
+        Due Fee:
+        <span>₹{{ tuitionFeeDue }}</span>
+      </div>
+      @if (feeStructure.length) {
+        <button class="fee-concession-btn" (click)="openFeeConcessionModal()">Fee Concession</button>
+      }
+    </div>
+  }
+
+  <!-- ★ Fee Concession Modal -->
+  @if (showFeeConcessionModal) {
+    <div class="modal-overlay">
+      <div class="modal-content fee-concession-modal">
+        <h3>Edit Fee Structure</h3>
+        <table class="fee-structure-modal-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Amount (₹)</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (fee of editableFeeStructure; track fee; let i = $index) {
+              <tr>
+                <td>
+                  @if (editIndex === i) {
+                    <input [(ngModel)]="fee.category" [ngModelOptions]="{standalone: true}" />
+                  } @else {
+                    {{ fee.category }}
+                  }
+                </td>
+                <td>
+                  @if (editIndex === i) {
+                    <input type="number" [(ngModel)]="fee.amount" [ngModelOptions]="{standalone: true}" />
+                  } @else {
+                    {{ fee.amount }}
+                  }
+                </td>
+                <td class="text-end">
+                  @if (editIndex === i) {
+                    <button (click)="saveFeeEdit(i)">Save</button>
+                    <button (click)="cancelFeeEdit()">Cancel</button>
+                  } @else {
+                    <button (click)="editFeeRow(i)">Edit</button>
+                    <button (click)="deleteFeeRow(i)">Delete</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <div class="modal-actions" style="justify-content: flex-end;">
+          <button class="cancel-btn" (click)="closeFeeConcessionModal()">Close</button>
+          <button style="background:#0b5ed7; color:#fff;" (click)="saveFeeStructureChanges()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Make Payment Form -->
+  @if (selectedStudent && !allPaymentsDone) {
+    <form [formGroup]="paymentForm" class="payment-form">
+      <h3>Make Payment</h3>
+      <label>
+        Payment Mode:
+        <select formControlName="mode">
+          <option value="Cash">Cash</option>
+          <option value="Online">Online</option>
+          <option value="Others">Others</option>
+        </select>
+      </label>
+      <label>
+        Fee Category:
+        <select formControlName="description" (change)="onDescriptionChange($event)">
+          <option value="">-- Select Fee Category --</option>
+          @for (fee of feeStructure; track fee) {
+            <option [value]="fee.category">
+              {{ fee.category }} (₹{{ fee.amount }})
+            </option>
+          }
+        </select>
+      </label>
+      <label>
+        Amount Paid:
+        <input type="number" formControlName="amountPaid" />
+      </label>
+      <label>
+        Total Fee:
+        <input type="number" formControlName="totalFee" readonly />
+      </label>
+      <p><strong>Balance Fee:</strong> ₹ {{ getBalance() }}</p>
+      <button type="button" (click)="onPayNow()">Pay Now</button>
+    </form>
+  }
+
+  <!-- ✅ Message if all payments are completed -->
+  @if (selectedStudent && allPaymentsDone) {
+    <div style="color: green; font-weight: bold; margin: 15px 0;">
+      ✅ All payments completed
+    </div>
+  }
+
+  <!-- Payment History -->
+  @if (paymentHistory.length) {
+    <div class="history-section">
+      <h3>Payment History</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Payment Type</th>
+            <th>Description</th>
+            <th>Amount Paid</th>
+            <th>Payment Mode</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of paymentHistory; track item) {
+            <tr>
+              <td>{{ item.date }}</td>
+              <td>{{ item.paymentType }}</td>
+              <td>{{ item.description }}</td>
+              <td>₹{{ item.amountPaid }}</td>
+              <td>{{ item.paymentMode }}</td>
+              <td>
+                @if (item.balanceFee === 0) {
+                  <span class="text-success" style="color: #4cbb17;">
+                    <i class="fa-solid fa-circle-check"></i> Amount Paid
+                  </span>
+                }
+                @if (item.balanceFee !== 0) {
+                  <span class="text-danger">
+                    ₹{{ item.balanceFee }}
+                  </span>
+                }
+              </td>
+              <td class="text-end">
+                <div class="action-icons">
+                  <i class="fa-solid fa-eye" (click)="viewReceipt(item)"></i>
+                  <i class="fa-solid fa-download" style="color: black;" (click)="generateReceipt(item)" title="Download Receipt"></i>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<!-- Dummy Payment Confirmation Modal -->
+@if (showConfirmModal) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <h3>Confirm Payment</h3>
+      <p><strong>Mode:</strong> {{ paymentForm.value.mode }}</p>
+      <p><strong>Description:</strong> {{ paymentForm.value.description }}</p>
+      <p><strong>Amount:</strong> ₹{{ paymentForm.value.amountPaid }}</p>
+      <div class="modal-actions">
+        <button (click)="confirmDummyPayment()">Confirm</button>
+        <button class="cancel-btn" (click)="showConfirmModal = false">Cancel</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ✅ Receipt View Modal -->
+@if (receiptItem) {
+  <div class="modal-overlay">
+    <div class="modal-receipt-fzra">
+      <div class="receipt-header-fzra">
+        <div class="header-left">
+          <div class="school-title-main">SFS EM SCHOOL</div>
+          <div class="school-address">Pithapuram, East Godavari Dist,<br>Pithapuram, Andhra Pradesh</div>
+        </div>
+        <div class="header-right">
+          <div class="receipt-label">RECEIPT</div>
+        </div>
+      </div>
+      <div class="receipt-underline"></div>
+      <div class="receipt-top-row">
+        <div>
+          <div>Receipt No.: <b>1</b></div>
+          <div>Name: <b>{{ selectedStudent.firstName }} {{ selectedStudent.lastName }}</b></div>
+          <div>Std.: <b>{{ selectedStudent.currentClass }}</b></div>
+        </div>
+        <div>
+          <div>Date: <b>{{ receiptItem.date }}</b></div>
+          <div>GR No.: <b>101</b></div>
+          <div>Div.: <b>B</b></div>
+        </div>
+      </div>
+      <table class="fzra-receipt-table">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Particulars</th>
+            <th>Amount</th>
+            <th>Balance Fee</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>{{ receiptItem.description }}</td>
+            <td>₹{{ receiptItem.totalFee }}</td>
+            <td>₹{{ receiptItem.balanceFee }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="text-align:right;">Fees Paid Amount:</td>
+            <td>₹{{ receiptItem.amountPaid }}</td>
+          </tr>
+          <!-- Only Tuition Fee payment shows Balance and 'Full Payment Done' when balance is 0 -->
+          @if (receiptItem.description && receiptItem.description.toLowerCase().includes('tuition')) {
+            <tr>
+              <td colspan="3" style="text-align:right;">Fees Balance Amount:</td>
+              <td>₹{{ receiptItem.balanceFee }}</td>
+            </tr>
+          }
+        </tfoot>
+      </table>
+      @if (receiptItem.balanceFee === 0) {
+        <div
+          style="color: green; font-weight: bold; text-align:center; margin-top:10px;">
+          Full Payment Done
+        </div>
+      }
+      <div class="fzra-bottom-row">
+        <div>Payment By: <span>Cash</span></div>
+        <div class="fzra-footer-note">Fees/Amount once paid will not be refundable or transferable.<br>Remarks: ---</div>
+        <div class="fzra-date-sign">
+          <span>{{ receiptItem.date }}</span>
+        </div>
+      </div>
+      <div class="modal-actions" style="margin-top:18px;text-align:right;">
+        <button class="cancel-btn" (click)="receiptItem = null">Close</button>
+      </div>
+    </div>
+  </div>
+}
+
+
+<!-- Receipt template to export -->
+<!-- Place this at the end of your template ONLY ONCE -->
+<div #receiptRef style="display:none">
+  <div class="modal-receipt-fzra">
+    <div class="receipt-header-fzra">
+      <div class="header-left">
+        <div class="school-title-main">S F S EM SCHOOL</div>
+        <div class="school-address">Pithapuram, East Godavari Dist,<br>Pithapuram, Andhra Pradesh</div>
+      </div>
+      <div class="header-right">
+        <div class="receipt-label">RECEIPT</div>
+      </div>
+    </div>
+    <div class="receipt-underline"></div>
+    <div class="receipt-top-row">
+      <div>
+        <div>Receipt No.: <b>1</b></div>
+        <div>Name: <b>{{ selectedStudent?.firstName }} {{ selectedStudent?.lastName }}</b></div>
+        <div>Std.: <b>{{ selectedStudent?.currentClass }}</b></div>
+      </div>
+      <div>
+        <div>Date: <b>{{ selectedPayment?.date }}</b></div>
+        <div>GR No.: <b>101</b></div>
+        <div>Div.: <b>B</b></div>
+      </div>
+    </div>
+    <table class="fzra-receipt-table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Particulars</th>
+          <th>Amount</th>
+          <th>Balance Fee</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>{{ selectedPayment?.description }}</td>
+          <td>₹{{ selectedPayment?.totalFee }}</td>
+          <td>₹{{ selectedPayment?.balanceFee }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" style="text-align:right;">Total Amount:</td>
+          <td>₹{{ selectedPayment?.totalFee }}</td>
+        </tr>
+        <tr>
+          <td colspan="3" style="text-align:right;">Fees Paid Amount:</td>
+          <td>₹{{ selectedPayment?.amountPaid }}</td>
+        </tr>
+        <!-- Only Tuition Fee payment shows Balance and 'Full Payment Done' when balance is 0 -->
+        @if (selectedPayment?.description && selectedPayment?.description.toLowerCase().includes('tuition')) {
+          <tr>
+            <td colspan="3" style="text-align:right;">Fees Balance Amount:</td>
+            <td>₹{{ selectedPayment?.balanceFee }}</td>
+          </tr>
+        }
+      </tfoot>
+    </table>
+    @if (selectedPayment?.description && selectedPayment?.description.toLowerCase().includes('tuition') && selectedPayment?.balanceFee === 0) {
+      <div
+        style="color: green; font-weight: bold; text-align:center; margin-top:12px;">
+        Full Payment Done
+      </div>
+    }
+  </div>
+</div>

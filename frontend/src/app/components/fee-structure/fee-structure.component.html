@@ -1,0 +1,80 @@
+<h2 class="page-title">Fee Structure</h2>
+
+<div class="filters">
+  <div class="filter-item">
+    <label for="year">Select Year:</label>
+    <select id="year" [(ngModel)]="selectedYear">
+      @for (year of academicYears; track year) {
+        <option [value]="year">{{ year }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="filter-item">
+    <label for="class">Select Class:</label>
+    <select id="class" [(ngModel)]="selectedClass">
+      @for (cls of classes; track cls) {
+        <option [value]="cls">{{ cls }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="button-group-inline">
+    <button class="add-fee-btn" (click)="addNewFee()">+ Add Fee</button>
+    <button class="search-btn" (click)="searchFees()">
+      <i class="fa-solid fa-magnifying-glass"></i> Search
+    </button>
+  </div>
+</div>
+
+@if (feeList.length > 0) {
+  <h3 class="academic-year-title">
+    Academic Year {{ selectedYear }} :
+  </h3>
+}
+
+@if (feeList.length > 0) {
+  <table class="fee-table">
+    <thead>
+      <tr>
+        <th>S.NO.</th>
+        <th>Fee Category</th>
+        <th>Description</th>
+        <th>Frequency</th>
+        <th>Amount (₹)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (fee of feeList; track fee; let i = $index) {
+        <tr>
+          @if (editingIndex === i) {
+            <td>{{ i + 1 }}</td>
+            <td><input [(ngModel)]="editedFee.category" /></td>
+            <td><input [(ngModel)]="editedFee.description" /></td>
+            <td><input [(ngModel)]="editedFee.frequency" /></td>
+            <td><input [(ngModel)]="editedFee.amount" /></td>
+            <td class="actions">
+              <button (click)="saveFee(i)">✅</button>
+              <button (click)="cancelEdit()">❌</button>
+            </td>
+          } @else {
+            <td>{{ i + 1 }}</td>
+            <td>{{ fee.category }}</td>
+            <td>{{ fee.description }}</td>
+            <td>{{ fee.frequency }}</td>
+            <td>₹ {{ fee.amount }}</td>
+            <td class="actions">
+              <button (click)="editFee(fee, i)">
+                <i class="fa-solid fa-pen-to-square" style="color: #2563eb; font-size: 18px;"></i>
+              </button>
+              <button (click)="deleteFee(fee)">
+                <i class="fa-solid fa-trash" style="color: red; font-size: 18px;"></i>
+              </button>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+}

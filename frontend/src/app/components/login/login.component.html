@@ -1,0 +1,59 @@
+<div style="display: flex; height: 100vh;">
+  <!-- Left Branding Panel -->
+  <div class="login-left" style="flex: 1; display: flex; align-items: center; justify-content: center;">
+    <div class="logo">
+      <img src="./bg5.jpg" alt="Logo" style="max-width: 100%; max-height: 100%;" />
+    </div>
+  </div>
+
+  <!-- Right Form Panel -->
+  <div class="login-right" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Montserrat', Arial, sans-serif;">
+    <h1>ClimEduSmart</h1>
+    <p>School Management System</p>
+    <h2>Login</h2>
+
+    <form (ngSubmit)="login()" style="width: 100%; max-width: 350px;">
+      <label>Email Address</label>
+      <input
+        type="email"
+        [(ngModel)]="email"
+        name="email"
+        required
+        placeholder="Enter your email"
+        style="width: 100%; padding: 10px; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px;"
+        />
+
+        <label>Password</label>
+        <input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          placeholder="Enter your password"
+          style="width: 100%; padding: 10px; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px;"
+          />
+
+          <div class="form-footer" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <label >
+              <input  type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
+              Remember me
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            class="primary-btn"
+            [disabled]="isLoading"
+            style="width: 100%; background-color: #3498db; color: white; border: none; padding: 10px; font-weight: bold; border-radius: 4px; cursor: pointer;"
+            >
+            {{ isLoading ? 'Signing In...' : 'Sign In' }}
+          </button>
+
+          @if (errorMessage) {
+            <div style="color: red; margin-top: 1rem;">
+              {{ errorMessage }}
+            </div>
+          }
+        </form>
+      </div>
+    </div>

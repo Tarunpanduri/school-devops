@@ -1,0 +1,173 @@
+<div class="container">
+  <button (click)="openForm()" class="add-btn">
+    <span class="material-icons">person_add</span>
+    Add New Teacher
+  </button>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <div>
+      <label>Select Department</label>
+      <select [(ngModel)]="selectedDepartment" (change)="applyFilters()">
+        <option value="">All Departments</option>
+        @for (dept of departments; track dept) {
+          <option [value]="dept">{{ dept }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label>Search</label>
+      <input type="text" placeholder="ID / Name" [(ngModel)]="searchTerm" (input)="applyFilters()">
+    </div>
+  </div>
+
+  <!-- TEACHER TABLE -->
+  <div class="table-container">
+    @if (filteredTeachers.length > 0) {
+      <table class="teacher-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>DOB</th>
+            <th>Gender</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (teacher of filteredTeachers; track teacher) {
+            <tr>
+              <td>{{ teacher.teacherId }}</td>
+              <td>{{ teacher.firstName }} {{ teacher.lastName }}</td>
+              <td>{{ teacher.department }}</td>
+              <td>{{ teacher.dateOfBirth | date:'mediumDate' }}</td>
+              <td>{{ teacher.gender }}</td>
+              <td>{{ teacher.phone }}</td>
+              <td>{{ teacher.email }}</td>
+              <td class="action-btns">
+                <button mat-icon-button color="primary" (click)="viewDetails(teacher)" matTooltip="View">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" (click)="editTeacher(teacher)" matTooltip="Edit">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="promptDelete(teacher)" matTooltip="Delete">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    @if (filteredTeachers.length === 0) {
+      <div class="no-results">
+        <p>No teachers found matching your criteria.</p>
+      </div>
+    }
+  </div>
+
+  <!-- MODAL DIALOG -->
+  @if (modalVisible) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>{{ modalTitle }}</h3>
+          <button mat-icon-button (click)="closeModal()" class="close-btn">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        @if (!isDeleteMode) {
+          <div class="modal-content">
+            <form #teacherForm="ngForm" (ngSubmit)="submitForm(teacherForm)">
+              <div class="form-grid">
+                <mat-form-field appearance="outline">
+                  <mat-label>Teacher ID</mat-label>
+                  <input matInput name="teacherId" [(ngModel)]="selectedTeacher.teacherId" required
+                    [readonly]="isViewMode">
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>First Name</mat-label>
+                    <input matInput name="firstName" [(ngModel)]="selectedTeacher.firstName" required
+                      [readonly]="isViewMode">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Last Name</mat-label>
+                      <input matInput name="lastName" [(ngModel)]="selectedTeacher.lastName" required
+                        [readonly]="isViewMode">
+                      </mat-form-field>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Gender</mat-label>
+                        <mat-select name="gender" [(ngModel)]="selectedTeacher.gender" [disabled]="isViewMode" required>
+                          <mat-option value="Male">Male</mat-option>
+                          <mat-option value="Female">Female</mat-option>
+                          <mat-option value="Other">Other</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Date of Birth</mat-label>
+                        <input matInput [matDatepicker]="picker" name="dateOfBirth" [(ngModel)]="selectedTeacher.dateOfBirth"
+                          [readonly]="isViewMode" required>
+                          <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="isViewMode"></mat-datepicker-toggle>
+                          <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                          <mat-label>Department</mat-label>
+                          <mat-select name="department" [(ngModel)]="selectedTeacher.department" [disabled]="isViewMode" required
+                            (selectionChange)="onDepartmentChange($event)">
+                            @for (dept of departments; track dept) {
+                              <mat-option [value]="dept">{{ dept }}</mat-option>
+                            }
+                            <mat-option value="+add">+ Add Department</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                          <mat-label>Phone Number</mat-label>
+                          <input matInput name="phone" [(ngModel)]="selectedTeacher.phone" [readonly]="isViewMode">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                          <mat-label>Email</mat-label>
+                          <input matInput type="email" name="email" [(ngModel)]="selectedTeacher.email" [readonly]="isViewMode">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                          <mat-label>Joining Date</mat-label>
+                          <input matInput [matDatepicker]="joinPicker" name="joiningDate"
+                            [(ngModel)]="selectedTeacher.joiningDate" [readonly]="isViewMode" required>
+                            <mat-datepicker-toggle matSuffix [for]="joinPicker" [disabled]="isViewMode"></mat-datepicker-toggle>
+                            <mat-datepicker #joinPicker></mat-datepicker>
+                          </mat-form-field>
+                          <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Address</mat-label>
+                            <textarea matInput name="address" [(ngModel)]="selectedTeacher.address" [readonly]="isViewMode"></textarea>
+                          </mat-form-field>
+                        </div>
+                        <div class="modal-actions">
+                          @if (!isViewMode) {
+                            <button mat-raised-button color="primary" type="submit"
+                              [disabled]="!teacherForm.valid">
+                              {{ isEditMode ? 'Update' : 'Save' }}
+                            </button>
+                          }
+                          <button mat-button type="button" (click)="closeModal()">Cancel</button>
+                        </div>
+                      </form>
+                    </div>
+                  }
+                  @if (isDeleteMode) {
+                    <div class="delete-confirm">
+                      <p>Are you sure you want to delete <strong>{{ selectedTeacher.firstName }} {{ selectedTeacher.lastName }}</strong>?</p>
+                      <div class="modal-actions">
+                        <button mat-raised-button color="warn" (click)="confirmDelete()">Delete</button>
+                        <button mat-button (click)="closeModal()">Cancel</button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>

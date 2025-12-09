@@ -1,0 +1,137 @@
+<div class="salary-container">
+  <h2>Salaries</h2>
+
+  <div class="filters-card">
+    <div class="filter-item">
+      <label>Select Month & Year:</label>
+      <input type="month" [(ngModel)]="selectedMonthYear" (change)="onMonthSelect()">
+    </div>
+
+    <div class="filter-item">
+      <label>Select Department:</label>
+      <select [(ngModel)]="selectedDepartment" (change)="filterTeachers()" [disabled]="!selectedMonthYear">
+        <option value="All">All</option>
+        @for (dept of departments; track dept) {
+          <option>{{dept}}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-item search">
+      <label>Search Teacher:</label>
+      <input type="text" [(ngModel)]="searchTerm" (input)="filterTeachers()" placeholder="Search by ID/Name" [disabled]="!selectedMonthYear">
+    </div>
+  </div>
+
+  @if (selectedMonthYear && filteredTeachers.length) {
+    <table>
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Teacher ID</th>
+          <th>Full Name</th>
+          <th>Department</th>
+          <th>Designation</th>
+          <th>Joining Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (teacher of filteredTeachers; track teacher; let i = $index) {
+          <tr>
+            <td>{{i + 1}}</td>
+            <td>{{teacher.id}}</td>
+            <td>{{teacher.name}}</td>
+            <td>{{teacher.department}}</td>
+            <td>{{teacher.designation}}</td>
+            <td>{{teacher.joiningDate}}</td>
+            <td class="actions">
+              <i class="fa fa-eye" (click)="viewPayslip(teacher)"></i>
+              <i class="fa fa-edit" (click)="openEditModal(teacher)"></i>
+              <i class="fa fa-download" (click)="downloadPayslip(teacher)"></i>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (selectedMonthYear && !filteredTeachers.length) {
+    <div>
+      <p>No teachers found for selected filters.</p>
+    </div>
+  }
+
+  <!-- Payslip & Edit Modal -->
+  @if (showPayslipModal || showEditModal) {
+    <div class="modal">
+      <div class="modal-content payslip-lg" #payslipContent>
+        @if (!showEditModal) {
+          <h2>PAYSLIP {{selectedMonth | uppercase}}_{{selectedYear}}</h2>
+        }
+        @if (showEditModal) {
+          <h2>EDIT PAYSLIP {{selectedMonth | uppercase}}_{{selectedYear}}</h2>
+        }
+        <p>SFS SCHOOL<br>PITAPURAM, ANDHRA PRADESH, 533450</p>
+        <div class="payslip-section">
+          <div class="row"><strong>Teacher Number:</strong> {{selectedTeacher?.id}}</div>
+          <div class="row"><strong>Teacher Name:</strong> {{selectedTeacher?.name}}</div>
+          <div class="row"><strong>Date Joined:</strong> {{selectedTeacher?.joiningDate}}</div>
+          <div class="row"><strong>Department:</strong> {{selectedTeacher?.department}}</div>
+        </div>
+        <div class="payslip-section">
+          <div class="row"><strong>Payment Mode:</strong> Bank Transfer</div>
+          <div class="row"><strong>Bank:</strong> IDFC FIRST</div>
+          <div class="row"><strong>IFSC:</strong> IDFB0080243</div>
+        </div>
+        <div class="payslip-section">
+          <div class="row"><strong>Bank Account:</strong> 10217822829</div>
+          <div class="row"><strong>PAN:</strong> AMZPY5771F</div>
+          <div class="row"><strong>UAN:</strong> 101473120114</div>
+          <div class="row"><strong>PF Number:</strong> APHYD3431707000</div>
+        </div>
+        <h4>SALARY DETAILS</h4>
+        @if (!showEditModal) {
+          <table class="salary-breakup">
+            <tr>
+              <th>EARNINGS</th><th>AMOUNT</th>
+              <th>CONTRIBUTIONS / DEDUCTIONS</th><th>AMOUNT</th>
+            </tr>
+            <tr><td>Basic</td><td>₹{{selectedTeacher?.basicSalary}}</td><td>PF Employee</td><td>₹1,800.00</td></tr>
+            <tr><td>HRA</td><td>₹{{selectedTeacher?.allowance}}</td><td>Professional Tax</td><td>₹208.00</td></tr>
+            <tr><td>Conveyance Allowance</td><td>₹3,000.00</td><td>Total Income Tax</td><td>₹3,008.00</td></tr>
+            <tr><td>Travel Reimbursement (LTA)</td><td>₹4,000.00</td><td></td><td></td></tr>
+            <tr><td>Food Coupons</td><td>₹2,400.00</td><td></td><td></td></tr>
+            <tr><td>COMMUNICATION ALLOWANCE</td><td>₹3,000.00</td><td></td><td></td></tr>
+            <tr class="total-row"><td>Total Earnings (A)</td><td>₹1,24,400.00</td><td>Total Deductions (B)</td><td>₹5,016.00</td></tr>
+          </table>
+        }
+        <!-- Edit inputs -->
+        @if (showEditModal) {
+          <div>
+            <table class="salary-breakup">
+              <tr><th>Component</th><th>Amount</th></tr>
+              <tr><td>Basic</td><td><input type="number" [(ngModel)]="basicSalary"></td></tr>
+              <tr><td>HRA</td><td><input type="number" [(ngModel)]="allowance"></td></tr>
+              <tr><td>Deductions</td><td><input type="number" [(ngModel)]="deductions"></td></tr>
+            </table>
+          </div>
+        }
+        <div class="net-pay">
+          <p><strong>Net Salary Payable ( A - B ):</strong> ₹1,19,384.00</p>
+          <p><strong>Net Salary in words:</strong> One Lakh Nineteen Thousand Three Hundred and Eighty Four Rupees only</p>
+        </div>
+        <p class="notes">
+          <em>Note: All amounts displayed in this payslip are in INR.<br>
+          *This is a system generated salary slip and does not require signature.</em>
+        </p>
+        <div class="modal-buttons">
+          @if (showEditModal) {
+            <button (click)="savePayslip()">Save</button>
+          }
+          <button (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

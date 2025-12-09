@@ -1,0 +1,103 @@
+<div class="attendance-container">
+  <!-- Top Controls -->
+  <div class="controls">
+    <label>
+      Select Month:
+      <input type="month" [(ngModel)]="selectedMonth" (change)="updateDaysInMonth()" />
+    </label>
+
+    <label>
+      Select Class:
+      <select [(ngModel)]="selectedClass" (change)="onClassChange()">
+        <option value="">--Select--</option>
+        @for (cls of classList; track cls) {
+          <option [value]="cls">{{ cls }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      Select Section:
+      <select [(ngModel)]="selectedSection" (change)="updateSelectedGrade()">
+        <option value="">--Select--</option>
+        @for (sec of sectionList; track sec) {
+          <option [value]="sec">{{ sec }}</option>
+        }
+      </select>
+    </label>
+
+    <button (click)="searchStudents()" class="search-btn">Search</button>
+  </div>
+
+  <!-- Attendance Table -->
+  @if (students.length > 0) {
+    <div class="table-wrapper">
+      <table class="attendance-table">
+        <thead>
+          <tr>
+            <th class="sticky-col">Student ID</th>
+            <th class="sticky-col-2">Name</th>
+            @for (day of days; track day) {
+              <th>{{ day }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (student of students; track student) {
+            <tr>
+              <td class="sticky-col">{{ student.Studentid }}</td>
+              <td class="sticky-col-2">{{ student.firstName }} {{ student.lastName }}</td>
+              @for (day of days; track day) {
+                <td
+            [ngClass]="{
+              'locked-present': isCheckboxDisabled(student.id, day) && attendanceData[student.id][day] && isToday(day),
+              'locked-absent': isCheckboxDisabled(student.id, day) && !attendanceData[student.id][day] && isToday(day),
+              'locked-frozen': !isToday(day)
+            }"
+                  >
+                  <div
+                    class="attendance-cell"
+              [ngClass]="{
+                'present': attendanceData[student.id][day] === true && isToday(day),
+                'absent': attendanceData[student.id][day] === false && isToday(day),
+                'frozen-present': attendanceData[student.id][day] === true && !isToday(day),
+                'frozen-absent': attendanceData[student.id][day] === false && !isToday(day),
+                'frozen': attendanceData[student.id][day] === null || attendanceData[student.id][day] === undefined
+              }"
+                    (click)="markPresent(student.id, day, $event)"
+                    (dblclick)="markAbsent(student.id, day, $event)"
+                    (click)="trackClick(student.id, day)"
+                    >
+                    <input
+                      type="checkbox"
+                      [checked]="attendanceData[student.id][day] === true"
+                      [disabled]="isCheckboxDisabled(student.id, day)"
+                      />
+                    </div>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- Submit Button -->
+    @if (students.length > 0) {
+      <button (click)="submitAttendance()" class="submit-btn">
+        Submit Attendance
+      </button>
+    }
+  </div>
+
+  <!-- Modal -->
+  @if (modalVisible) {
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <h3>{{ modalTitle }}</h3>
+        <p>{{ modalMessage }}</p>
+        <button (click)="modalVisible = false" class="close-btn">Close</button>
+      </div>
+    </div>
+  }

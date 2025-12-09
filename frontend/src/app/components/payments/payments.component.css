@@ -1,0 +1,585 @@
+.payments-container {
+  width: 100%;
+  max-width: unset;
+  min-height: calc(100vh - 100px);
+  margin: 0;
+  background: #fff;
+  border-radius: 10px;
+  border: 2px solid #ccc;
+  box-shadow: 0 3px 18px rgba(80, 80, 112, 0.07);
+  padding: 32px 28px 24px 28px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.payments-container h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e283d;
+  margin-bottom: 16px;
+}
+
+.payments-container h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  margin-top: 8px;
+}
+
+.search-form, .payment-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+  margin-bottom: 25px;
+}
+
+.search-form label, .payment-form label {
+  flex-direction: column;
+  display: flex;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  min-width: 200px;
+  margin-bottom: 0;
+}
+
+input, select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 14px;
+  width: 220px;
+}
+
+input[readonly] {
+  background: #eee;
+}
+
+button, button[type="submit"] {
+  padding: 10px 24px;
+  background: #0b5ed7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-self: flex-end;
+  margin-top: 0;
+}
+
+button:hover {
+  background-color: #084fbe;
+}
+
+.student-details-box,
+.history-section {
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 20px;
+  margin-bottom: 28px;
+}
+
+.student-details-box p {
+  margin-bottom: 7px;
+  font-size: 15px;
+}
+
+.student-details-box p:last-child {
+  margin-bottom: 0;
+}
+
+.status-paid {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-unpaid {
+  background-color: #f8d7da;
+  color: #842029;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.history-section table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.history-section th {
+  background: #0b5ed7;
+  color: #fff;
+  padding: 10px 6px;
+  text-align: left;
+  font-weight: 700;
+  vertical-align: top;
+}
+.history-section td {
+  padding: 10px 6px;
+  border-bottom: 1px solid #ddd;
+  vertical-align: top;
+}
+.history-section tr:last-child td {
+  border-bottom: none;
+}
+.history-section tr:hover {
+  background: #f1f1f1;
+}
+
+.action-icons {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start; /* left-align inside cell */
+  gap: 8px;                /* vertical spacing between icons */
+  margin-top: 0;           /* remove any default centering */
+  /* Remove justify-content */
+}
+.action-icons i {
+   font-size: 18px;
+  color: #0b5ed7;
+  cursor: pointer;
+  transition: color 0.15s;
+  margin: 0; /* Remove top/bottom margin if any */
+}
+.action-icons i:hover {
+  color: #084fbe;
+}
+
+@media (max-width: 1100px) {
+  .payments-container {
+    padding: 14px 2vw 8px 2vw;
+    border-radius: 0;
+    min-height: unset;
+  }
+  .student-details-box, .history-section {
+    padding: 12px 4px;
+  }
+  input, select {
+    font-size: 13px;
+    padding: 8px 7px;
+    width: 97%;
+  }
+}
+
+@media (max-width: 700px) {
+  .payment-container {
+    padding: 4px 1vw;
+  }
+  .search-form, .payment-form {
+    flex-direction: column;
+  }
+  input, select {
+    width: 100%;
+  }
+}
+
+/* Specific .payment-form card: horizontally wrapped, boxed, and consistent with rest */
+.payment-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+  margin-bottom: 25px;
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 20px;
+}
+.payment-form h3 {
+  flex-basis: 100%;
+  margin-bottom: 12px;
+  margin-top: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.payment-form label {
+  min-width: 200px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+.payment-form input,
+.payment-form select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 14px;
+  width: 220px;
+  margin-top: 2px;
+}
+.payment-form input[readonly] {
+  background: #eee;
+}
+.payment-form p {
+  flex-basis: 100%;
+  margin-top: 8px;
+  margin-bottom: 0;
+  color: #0956b3;
+  font-weight: 600;
+}
+.payment-form button {
+  padding: 10px 24px;
+  background: #0b5ed7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: background-color 0.2s;
+  margin-top: 0;
+}
+.payment-form button:hover {
+  background-color: #084fbe;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(33, 33, 33, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px 32px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: #0b5ed7;
+}
+
+.modal-content p {
+  font-size: 15px;
+  margin: 6px 0;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  gap: 12px;
+}
+
+.modal-actions button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.modal-actions .cancel-btn {
+  background: #ccc;
+  color: #000;
+}
+
+.modal-actions button:first-child {
+  background: #0b5ed7;
+  color: white;
+}
+.success-box {
+  background-color: #e6ffed;
+  color: green;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 15px;
+  text-align: center;
+  border: 1px solid #b3e6c5;
+}
+
+
+.receipt-a4 {
+  width: 190mm;
+  min-height: 100mm;
+  font-family: 'Arial', sans-serif;
+  background: #fff;
+  color: #111;
+  padding: 18mm 10mm 10mm 10mm;
+  box-sizing: border-box;
+  font-size: 15px;
+}
+
+.school-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin: 0 0 8px 0;
+}
+
+.receipt-title {
+  text-align: center;
+  margin: 0 0 16px 0;
+  padding-bottom: 6px;
+  text-decoration: underline;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: .06em;
+}
+
+.receipt-section.row-flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.receipt-section {
+  margin-bottom: 12px;
+}
+
+.receipt-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0 8px 0;
+  table-layout: fixed;
+}
+
+.receipt-table th, .receipt-table td {
+  border: 1px solid #111;
+  padding: 9px 7px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.receipt-table th {
+  background: #fff;
+  font-weight: bold;
+}
+
+.receipt-table td {
+  color: #111;
+  background: #fff;
+}
+
+.thanks-note {
+  text-align: center;
+  margin: 24px 0 0 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* For html2pdf: Ensure nothing is clipped */
+@media print {
+  .receipt-a4 {
+    width: 190mm !important;
+    min-height: 100mm;
+    background: #fff !important;
+    color: #111 !important;
+  }
+}
+
+/* Fee summary row */
+.fee-summary-row {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0.5px 7px rgba(20, 40, 80, 0.08);
+  border: 2px solid #ccc;
+  padding: 15px 30px;
+  margin-bottom: 22px;
+}
+
+.fee-tile {
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 7px;
+  padding: 7px 22px;
+  margin: 0 7px 0 0;
+  background: #f6fff6;
+  border: 1.5px solid #e0ede0;
+  display: flex;
+  align-items: center;
+}
+.fee-tile.total-fee span { color: #25a944; font-weight: bold; }
+.fee-tile.due-fee   { background: #fff6f6; border: 1.5px solid #f5dad8; }
+.fee-tile.due-fee span { color: #d92a2a; font-weight: bold; }
+
+.fee-concession-btn {
+  background: #0b5ed7;
+  color: #fff;
+  font-size: 15px;
+  padding: 8px 18px;
+  border-radius: 7px;
+  border: none;
+  margin-left: auto;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.14s;
+  box-shadow: 0 1.5px 6px rgba(13,80,200,0.06);
+}
+.fee-concession-btn:hover { background: #084fbe; }
+
+/* Modal improvements for fee concession */
+.fee-concession-modal {
+  max-width: 600px !important;
+  width: 96vw;
+}
+.fee-structure-modal-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 18px;
+}
+.fee-structure-modal-table th, .fee-structure-modal-table td {
+  border: 1px solid #aaa;
+  padding: 8px 7px;
+  text-align: left;
+  font-size: 15px;
+}
+.fee-structure-modal-table th.text-end,
+.fee-structure-modal-table td.text-end {
+  text-align: right;
+}
+.fee-structure-modal-table td button {
+  margin-right: 6px;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 5px;
+  font-size: 13px;
+  background: #0b5ed7;
+  color: #fff;
+  cursor: pointer;
+}
+.fee-structure-modal-table td button:nth-child(2) {
+  background: #b2b2b2;
+  color: #222;
+}
+
+.modal-receipt-fzra, .pdf-receipt-fzra {
+  background: #fff;
+  border: 2px solid #222;
+  border-radius: 0;
+  box-shadow: none;
+  max-width: 550px;
+  min-width: 375px;
+  margin: 0 auto;
+  padding: 21px 18px 11px 18px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+.receipt-header-fzra {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.header-left { flex:1; }
+.school-title-main {
+  text-align: center;
+  font-size: 23px;
+  color: #131a27;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.school-address {
+  text-align: center;
+  font-size: 12.5px;
+  color: #222;
+  margin-bottom: 3px;
+}
+.header-right {
+  min-width: 75px;
+  text-align: right;
+}
+.receipt-label {
+  display: inline-block;
+  border: 1.7px solid #353545;
+  background: #fff;
+  color: #181d27;
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: .09em;
+  padding: 4px 17px 4px 17px;
+  margin-top: 6px;
+}
+.receipt-underline {
+  border-top: 2.2px solid #101218;
+  margin: 10px 0 14px 0;
+}
+.receipt-top-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+.receipt-top-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.fzra-receipt-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+.fzra-receipt-table th, .fzra-receipt-table td {
+  border: 1.2px solid #181b25;
+  text-align: center;
+  padding: 7px 13px;
+  font-size: 15px;
+}
+.fzra-receipt-table th {
+  background: #e7f3ff;
+  color: #01194c;
+  font-weight: 800;
+}
+.fzra-receipt-table td {
+  background: #fff;
+  color: #242727;
+}
+.fzra-receipt-table tfoot td {
+  background: #f8fcff;
+  font-weight: bold;
+}
+@media (max-width: 600px) {
+  .modal-receipt-fzra, .pdf-receipt-fzra { min-width: 0; padding: 7px 2vw 9px 2vw; }
+  .receipt-header-fzra { flex-direction: column; }
+  .school-title-main { font-size: 15px; }
+  .fzra-receipt-table, .fzra-receipt-table th, .fzra-receipt-table td { font-size: 12px; }
+}
+
+
