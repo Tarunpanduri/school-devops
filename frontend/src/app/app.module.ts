@@ -14,21 +14,21 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { SidebarComponent } from './components/reuable_components/sidebar/sidebar.component';
 import { LoginComponent } from './components/login/login.component';
-import { HeaderComponent } from './components/header/header.component';
+import { HeaderComponent } from './components/reuable_components/header/header.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
-import { AttendenceComponent } from './components/attendence/attendence.component';
-import { MainLayoutComponent } from './components/layout/main-layout/main-layout.component';
-import { TeachersattendenceComponent } from './components/teachersattendence/teachersattendence.component';
-import { StudentsInfoComponent } from './components/students-info/students-info.component';
-import { AcademicsComponent } from './components/academics/academics.component';
-import { FeeStructureComponent } from './components/fee-structure/fee-structure.component';
-import { HomeworkComponent } from './components/homework/homework.component';
-import { SalariesComponent } from './components/salaries/salaries.component';
+import { AttendenceComponent } from './components/students/attendence/attendence.component';
+import { MainLayoutComponent } from './components/reuable_components/layout/main-layout/main-layout.component';
+import { TeachersattendenceComponent } from './components/teachers/teachersattendence/teachersattendence.component';
+import { StudentsInfoComponent } from './components/students/students-info/students-info.component';
+import { AcademicsComponent } from './components/students/academics/academics.component';
+import { FeeStructureComponent } from './components/students/fee-structure/fee-structure.component';
+import { HomeworkComponent } from './components/students/homework/homework.component';
+import { SalariesComponent } from './components/teachers/salaries/salaries.component';
 import { PaymentsComponent } from './components/payments/payments.component';
-import { TeachersInfoComponent } from './components/teachers-info/teachers-info.component';
+import { TeachersInfoComponent } from './components/teachers/t-info/teachers-info.component';
 
 // Firebase compat imports (match AngularFireAuth + compat DB usage)
 import { AngularFireModule } from '@angular/fire/compat';

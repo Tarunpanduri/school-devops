@@ -1,0 +1,202 @@
+<div class="academics-container">
+  <h3>Academics</h3>
+  <h1>Exams & Results</h1>
+
+  <div class="filters">
+    <div class="filter">
+      <label>Select Exam</label>
+      <select [(ngModel)]="selectedExam" (change)="onExamSelectChange()">
+        <option value="">Select Exam</option>
+        @for (exam of exams; track exam) {
+          <option [value]="exam">{{ exam }}</option>
+        }
+      </select>
+    </div>
+    <div class="filter">
+      <label>Select Class</label>
+      <select [(ngModel)]="selectedClass" (change)="onClassSelectChange()">
+        <option value="">Select Class</option>
+        @for (cls of classes; track cls) {
+          <option [value]="cls">{{ cls }}</option>
+        }
+      </select>
+    </div>
+    <div class="filter">
+      <label>Select Section</label>
+      <select [(ngModel)]="selectedSection" (change)="onSectionSelectChange()">
+        <option value="">Select Section</option>
+        @for (sec of sections; track sec) {
+          <option [value]="sec">{{ sec }}</option>
+        }
+      </select>
+    </div>
+    <div class="filter">
+      <label>Select Student</label>
+      <select [(ngModel)]="selectedStudent" (change)="onStudentChange()">
+        <option value="">Select Student</option>
+        @for (student of studentsList; track student) {
+          <option [value]="student">{{ student }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (hasFullSelection) {
+    <div id="marksheet">
+      <table class="marks-table">
+        <thead>
+          <tr>
+            <th>Subjects</th>
+            <th>Max Marks</th>
+            <th>Marks Scored</th>
+            <th>Grade</th>
+            <th>Remarks</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (subject of subjects; track subject; let i = $index) {
+            <tr>
+              <td>
+                @if (editIndex === i) {
+                  <input [(ngModel)]="subject.name" />
+                }
+                @if (editIndex !== i) {
+                  <span>{{ subject.name }}</span>
+                }
+              </td>
+              <td>
+                @if (editIndex === i) {
+                  <input type="number" [(ngModel)]="subject.maxMarks" />
+                }
+                @if (editIndex !== i) {
+                  <span>{{ subject.maxMarks }}</span>
+                }
+              </td>
+              <td>
+                @if (editIndex === i) {
+                  <input
+                    type="number"
+                    [(ngModel)]="subject.marksScored"
+                    (input)="validateMarks(subject)"
+                  />
+                }
+                @if (editIndex !== i) {
+                  <span>{{ subject.marksScored }}</span>
+                }
+              </td>
+              <td>
+                @if (editIndex === i) {
+                  <input [(ngModel)]="subject.grade" />
+                }
+                @if (editIndex !== i) {
+                  <span>{{ subject.grade }}</span>
+                }
+              </td>
+              <td>
+                @if (editIndex === i) {
+                  <input [(ngModel)]="subject.remarks" />
+                }
+                @if (editIndex !== i) {
+                  <span>{{ subject.remarks }}</span>
+                }
+              </td>
+              <td>
+                @if (editIndex !== i) {
+                  <button (click)="editRow(i)">
+                    <i
+                      class="fa-solid fa-pen-to-square"
+                      style="color: #007bff; font-size: 18px;"
+                    ></i>
+                  </button>
+                  <button (click)="deleteRow(i)">
+                    <i
+                      class="fa-solid fa-trash"
+                      style="color: red; font-size: 18px;"
+                    ></i>
+                  </button>
+                }
+                @if (editIndex === i) {
+                  <button (click)="saveEdit(i)">
+                    <i
+                      class="fa-solid fa-square-check"
+                      style="color: green; font-size: 18px;"
+                    ></i>
+                  </button>
+                  <button (click)="cancelEdit()">
+                    <i
+                      class="fa-solid fa-square-xmark"
+                      style="color: red; font-size: 18px;"
+                    ></i>
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="actions">
+      <button (click)="exportPDF()">
+        <i class="fa-solid fa-file-export" style="color: black;"></i> Export PDF
+      </button>
+      <button (click)="print()">
+        <i class="fa-solid fa-print" style="color: black;"></i> Print
+      </button>
+      <button class="primary" (click)="addMarksRow()">
+        <i class="fa-solid fa-plus" style="color: white;"></i> Add Marks
+      </button>
+    </div>
+
+    <!-- UPDATED PROFESSIONAL PRINT MARKSHEET -->
+    <div id="pdf-marksheet">
+      <h2>{{ schoolName }}, {{ schoolCity }}, {{ schoolState }}</h2>
+      <h3>{{ examHeader }} - {{ currentYear }}</h3>
+
+      <table>
+        <tr>
+          <td><strong>MR/MS:</strong> {{ selectedStudent }}</td>
+          <td>
+            <strong>CLASS:</strong> {{ selectedClass }} - {{ selectedSection }}
+          </td>
+        </tr>
+      </table>
+
+      <table>
+        <thead>
+          <tr>
+            <th>SUBJECTS</th>
+            <th>MAX. MARKS</th>
+            <th>MARKS OBTAINED</th>
+            <th>REMARKS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (subject of subjects; track subject) {
+            <tr>
+              <td>{{ subject.name }}</td>
+              <td>{{ subject.maxMarks }}</td>
+              <td>{{ subject.marksScored }}</td>
+              <td>{{ subject.remarks }}</td>
+            </tr>
+          }
+          <tr>
+            <td colspan="3"><strong>GRAND TOTAL</strong></td>
+            <td>{{ getGrandTotal() }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div
+        class="result-status"
+        [class.pass]="isPassed()"
+        [class.fail]="!isPassed()"
+      >
+        Result: {{ isPassed() ? 'PASSED' : 'FAILED' }}
+      </div>
+
+      <div class="parent-signature">Parent Signature</div>
+    </div>
+  }
+</div>
