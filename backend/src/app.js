@@ -10,6 +10,8 @@ const homeworkRoutes = require("./routes/homework.routes");
 const academicsRoutes = require("./routes/academics.routes");
 const teachersRoutes = require("./routes/teachers.routes");
 const teachersAttendanceRoutes = require('./routes/teachersAttendence.routes');
+const salariesRoutes = require("./routes/salaries.routes");
+
 
 
 
@@ -30,6 +32,8 @@ app.use("/homework", homeworkRoutes);
 app.use("/academics", academicsRoutes);
 app.use("/teachers", teachersRoutes);
 app.use("/teachers-attendance", teachersAttendanceRoutes);
+app.use("/salaries", salariesRoutes);
+
 
 
 

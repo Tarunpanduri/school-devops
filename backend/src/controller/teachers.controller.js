@@ -35,10 +35,14 @@ async function listTeachers(req, res) {
     const teachers = await teachersService.getTeachers();
     res.json({ teachers });
   } catch (err) {
-    console.error("listTeachers error:", err);
-    res.status(500).json({ error: "Failed to load teachers" });
+    console.error("listTeachers DB error:", err);
+    res.status(500).json({
+      error: "Failed to load teachers",
+      details: err.message
+    });
   }
 }
+
 
 async function createTeacher(req, res) {
   const body = req.body;

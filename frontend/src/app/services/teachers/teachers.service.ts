@@ -16,6 +16,17 @@ export interface Teacher {
   phone?: string | null;
   email?: string | null;
   address?: string | null;
+  designation?: string | null;
+  bankName?: string | null;
+  bankAccount?: string | null;
+  bankIfsc?: string | null;
+  pan?: string | null;
+  uan?: string | null;
+  pfNumber?: string | null;
+  basicSalary?: number | null;
+  allowance?: number | null;
+  deductions?: number | null;
+
 }
 
 @Injectable({

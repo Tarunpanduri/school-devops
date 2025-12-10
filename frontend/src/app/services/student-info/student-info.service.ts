@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 
 export interface Student {
-  id?: number; // backend id
+  id?: number; 
   admissionNumber: string;
   firstName: string;
   lastName: string;

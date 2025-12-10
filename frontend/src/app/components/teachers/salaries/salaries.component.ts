@@ -1,7 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Database, ref, onValue, update } from '@angular/fire/database';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+
+import { TeachersService } from '../../../services/teachers/teachers.service';
+import {
+  SalariesService,
+  TeacherSalary,
+} from '../../../services/salaries/salaries.service';
+import {
+  SchoolProfileService,
+  SchoolProfile,
+} from '../../../services/school/school-profile.service';
 
 @Component({
   standalone: false,
@@ -10,131 +19,221 @@ import jsPDF from 'jspdf';
   styleUrls: ['./salaries.component.css']
 })
 export class SalariesComponent implements OnInit {
-  selectedMonthYear: string = '';
-  selectedMonth: string = '';
-  selectedYear: number = 0;
-
-  teachers: any[] = [];
-  filteredTeachers: any[] = [];
+  selectedMonthYear = '';        // 'YYYY-MM'
+  selectedMonth = '';            // 'December'
+  selectedYear = 0;
 
   departments: string[] = [];
   selectedDepartment: string = 'All';
   searchTerm: string = '';
 
-  showPayslipModal: boolean = false;
-  showEditModal: boolean = false;
-  selectedTeacher: any = null;
+  teachers: TeacherSalary[] = [];
+  filteredTeachers: TeacherSalary[] = [];
 
-  basicSalary: number = 0;
-  allowance: number = 0;
-  deductions: number = 0;
+  showPayslipModal = false;
+  showEditModal = false;
+  selectedTeacher: TeacherSalary | null = null;
 
-  constructor(private db: Database) {}
+  basicSalary = 0;
+  allowance = 0;
+  deductions = 0;
+
+  schoolProfile: SchoolProfile | null = null;
+  isLoading = false;
+
+  constructor(
+    private teachersService: TeachersService,
+    private salariesService: SalariesService,
+    private schoolProfileService: SchoolProfileService
+  ) {}
 
   ngOnInit(): void {
-    this.loadTeachers();
+    this.loadDepartments();
+    this.loadSchoolProfile();
   }
 
-  onMonthSelect() {
+  /* ---------- LOADERS ---------- */
+
+  private loadDepartments(): void {
+    this.teachersService.getDepartments().subscribe({
+      next: res => {
+        this.departments = (res.departments || []).sort((a, b) =>
+          a.localeCompare(b)
+        );
+      },
+      error: err => {
+        console.error('Failed to load departments:', err);
+      },
+    });
+  }
+
+  private loadSchoolProfile(): void {
+    this.schoolProfileService.getProfile().subscribe({
+      next: profile => {
+        this.schoolProfile = profile;
+      },
+      error: err => {
+        console.error('Failed to load school profile:', err);
+      },
+    });
+  }
+
+  private loadSalaries(): void {
+    if (!this.selectedMonthYear) {
+      this.teachers = [];
+      this.filteredTeachers = [];
+      return;
+    }
+
+    this.isLoading = true;
+    this.salariesService
+      .getSalaries(this.selectedMonthYear, this.selectedDepartment)
+      .subscribe({
+        next: res => {
+          this.teachers = res.teachers || [];
+          this.applyFilters();
+          this.isLoading = false;
+        },
+        error: err => {
+          console.error('Failed to load salaries:', err);
+          this.teachers = [];
+          this.filteredTeachers = [];
+          this.isLoading = false;
+        },
+      });
+  }
+
+  /* ---------- MONTH + FILTERS ---------- */
+
+  onMonthSelect(): void {
     if (this.selectedMonthYear) {
-      const [year, monthNum] = this.selectedMonthYear.split('-');
-      this.selectedYear = parseInt(year);
-      this.selectedMonth = new Date(0, parseInt(monthNum) - 1).toLocaleString('default', { month: 'long' });
-      this.filterTeachers();
+      const [yearStr, monthStr] = this.selectedMonthYear.split('-');
+      this.selectedYear = Number(yearStr);
+      const monthIndex = Number(monthStr) - 1;
+      this.selectedMonth = new Date(0, monthIndex).toLocaleString('default', {
+        month: 'long',
+      });
+
+      this.loadSalaries();
     } else {
+      this.selectedMonth = '';
+      this.selectedYear = 0;
+      this.teachers = [];
       this.filteredTeachers = [];
     }
   }
 
-  loadTeachers() {
-    const teachersRef = ref(this.db, 'teachers');
-    onValue(teachersRef, (snapshot) => {
-      const data = snapshot.val();
-      this.teachers = [];
-      this.departments = [];
-      for (let key in data) {
-        const teacher = data[key];
-        this.teachers.push({
-          key,
-          id: teacher.teacherId,  // also fix capitalization here from Teacherid -> teacherId
-          name: `${teacher.firstName} ${teacher.lastName}`,
-          department: teacher.department,
-          joiningDate: teacher.joiningDate, // ✅ FIXED FIELD
-          designation: "Teacher",
-          basicSalary: teacher.basicSalary || 30000,
-          allowance: teacher.allowance || 2000,
-          deductions: teacher.deductions || 1000
-        });
+  filterTeachers(): void {
+    this.applyFilters();
+  }
 
-        if (!this.departments.includes(teacher.department)) {
-          this.departments.push(teacher.department);
-        }
-      }
-      this.filterTeachers();
+  private applyFilters(): void {
+    const search = this.searchTerm.toLowerCase().trim();
+
+    this.filteredTeachers = (this.teachers || []).filter(t => {
+      const matchDept =
+        this.selectedDepartment === 'All' ||
+        t.department === this.selectedDepartment;
+
+      const idMatch = t.teacherId.toLowerCase().includes(search);
+      const nameMatch = t.fullName.toLowerCase().includes(search);
+
+      const matchSearch = !search || idMatch || nameMatch;
+
+      return matchDept && matchSearch;
     });
   }
 
-  filterTeachers() {
-    if (!this.selectedMonthYear) return;
+  /* ---------- PAYSLIP VIEW / EDIT ---------- */
 
-    const selectedDate = new Date(`${this.selectedMonthYear}-01`);
-
-    this.filteredTeachers = this.teachers.filter(teacher => {
-      const [year, month, day] = teacher.joiningDate.split('-');
-      const joiningDate = new Date(+year, +month - 1, +day);
-
-      const matchesDept = this.selectedDepartment === 'All' || teacher.department === this.selectedDepartment;
-      const matchesSearch = !this.searchTerm ||
-        teacher.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        teacher.id.toLowerCase().includes(this.searchTerm.toLowerCase());
-
-      return joiningDate <= selectedDate && matchesDept && matchesSearch;
-    });
+  get selectedNetSalary(): number {
+    if (!this.selectedTeacher) return 0;
+    return (
+      Number(this.selectedTeacher.basicSalary || 0) +
+      Number(this.selectedTeacher.allowance || 0) -
+      Number(this.selectedTeacher.deductions || 0)
+    );
   }
 
-  viewPayslip(teacher: any) {
+  viewPayslip(teacher: TeacherSalary): void {
     this.selectedTeacher = teacher;
+    this.showEditModal = false;
     this.showPayslipModal = true;
   }
 
-  openEditModal(teacher: any) {
+  openEditModal(teacher: TeacherSalary): void {
     this.selectedTeacher = teacher;
-    this.basicSalary = teacher.basicSalary;
-    this.allowance = teacher.allowance;
-    this.deductions = teacher.deductions;
+    this.basicSalary = Number(teacher.basicSalary || 0);
+    this.allowance = Number(teacher.allowance || 0);
+    this.deductions = Number(teacher.deductions || 0);
     this.showEditModal = true;
+    this.showPayslipModal = true;
   }
 
-  savePayslip() {
-    update(ref(this.db, `teachers/${this.selectedTeacher.key}`), {
+  savePayslip(): void {
+    if (!this.selectedTeacher || !this.selectedMonthYear) {
+      return;
+    }
+
+    const body = {
+      teacherId: this.selectedTeacher.id, // numeric PK from backend
+      month: this.selectedMonthYear,
       basicSalary: this.basicSalary,
       allowance: this.allowance,
-      deductions: this.deductions
-    }).then(() => {
-      this.showEditModal = false;
-      this.loadTeachers();
+      deductions: this.deductions,
+    };
+
+    this.salariesService.saveSalary(body).subscribe({
+      next: () => {
+        // refresh list so UI stays in sync
+        this.loadSalaries();
+        this.closeModal();
+      },
+      error: err => {
+        console.error('Failed to save salary:', err);
+      },
     });
   }
 
-  async downloadPayslip(teacher: any) {
+  /* ---------- DOWNLOAD PAYSLIP ---------- */
+
+  async downloadPayslip(teacher: TeacherSalary): Promise<void> {
+    if (!this.selectedMonthYear) return;
+
     this.selectedTeacher = teacher;
+    this.showEditModal = false;
     this.showPayslipModal = true;
 
+    // Give Angular time to render the modal
     setTimeout(async () => {
-      const modal = document.querySelector('.modal-content') as HTMLElement;
+      const modal = document.querySelector(
+        '.modal-content.payslip-lg'
+      ) as HTMLElement;
+
+      if (!modal) {
+        console.error('Payslip modal element not found');
+        return;
+      }
+
       const canvas = await html2canvas(modal);
       const imgData = canvas.toDataURL('image/png');
       const doc = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = doc.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
       doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      doc.save(`Payslip_${teacher.name}_${this.selectedMonth}_${this.selectedYear}.pdf`);
+      const monthLabel = this.selectedMonth || this.selectedMonthYear;
+      doc.save(`Payslip_${teacher.fullName}_${monthLabel}_${this.selectedYear}.pdf`);
+
       this.closeModal();
     }, 200);
   }
 
-  closeModal() {
+  /* ---------- MODAL UTILS ---------- */
+
+  closeModal(): void {
     this.showPayslipModal = false;
     this.showEditModal = false;
+    this.selectedTeacher = null;
   }
 }

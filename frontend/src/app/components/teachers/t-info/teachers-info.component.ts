@@ -46,7 +46,7 @@ export class TeachersInfoComponent implements OnInit {
     private teachersService: TeachersService,
     private snackBar: MatSnackBar,
     private datePipe: DatePipe
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.fetchDepartments();
@@ -116,7 +116,7 @@ export class TeachersInfoComponent implements OnInit {
       const matchDept =
         !this.selectedDepartment ||
         teacher.department?.toLowerCase() ===
-          this.selectedDepartment.toLowerCase();
+        this.selectedDepartment.toLowerCase();
 
       const search = this.searchTerm.toLowerCase();
       const matchSearch =
@@ -138,7 +138,6 @@ export class TeachersInfoComponent implements OnInit {
     this.resetModes();
     this.modalTitle = 'Add New Teacher';
     this.selectedTeacher = {
-      id: undefined,
       teacherId: '',
       firstName: '',
       lastName: '',
@@ -149,6 +148,17 @@ export class TeachersInfoComponent implements OnInit {
       phone: '',
       email: '',
       address: '',
+
+      designation: '',
+      bankName: '',
+      bankAccount: '',
+      bankIfsc: '',
+      pan: '',
+      uan: '',
+      pfNumber: '',
+      basicSalary: 0,
+      allowance: 0,
+      deductions: 0,
     };
     this.modalVisible = true;
   }
