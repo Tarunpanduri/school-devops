@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
     this.errorMessage = null;
 
     try {
-      await this.auth.login(this.email, this.password);
+      const user = await this.auth.login(this.email, this.password);
 
       if (this.rememberMe) {
         localStorage.setItem('rememberedEmail', this.email);
@@ -46,7 +46,8 @@ export class LoginComponent implements OnInit {
         localStorage.removeItem('rememberedPassword');
       }
 
-      this.router.navigate(['/dashboard']);
+      // Role-based routing
+      await this.routeBasedOnRole(user);
     } catch (error: unknown) {
       this.handleAuthError(error);
     } finally {
@@ -54,8 +55,33 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  private async routeBasedOnRole(user: any) {
+    // Get user role from auth service or user object
+    const role = user?.role || await this.auth.getCurrentUserRole();
+    
+    switch (role?.toLowerCase()) {
+      case 'supadmin':
+        await this.router.navigate(['/dashboard']);
+        break;
+      case 'admin':
+        await this.router.navigate(['/students-info']);
+        break;
+      case 'teacher':
+        await this.router.navigate(['/students-info']);
+        break;
+      case 'student':
+        await this.router.navigate(['/students-info']);
+        break;
+      case 'parent':
+        await this.router.navigate(['/students-info']);
+        break;
+      default:
+        // Default route for any role
+        await this.router.navigate(['/students-info']);
+    }
+  }
+
   private handleAuthError(error: unknown) {
-    // Firebase auth errors
     if (error instanceof FirebaseError) {
       switch (error.code) {
         case 'auth/invalid-email':
@@ -75,7 +101,6 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // Backend / network errors
     if (error instanceof Error && error.message === 'BACKEND_LOGIN_FAILED') {
       this.errorMessage = 'Login succeeded, but backend sync failed. Please try again.';
       return;

@@ -17,7 +17,6 @@ import { AppComponent } from './app.component';
 import { SidebarComponent } from './components/reuable_components/sidebar/sidebar.component';
 import { LoginComponent } from './components/login/login.component';
 import { HeaderComponent } from './components/reuable_components/header/header.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 import { AttendenceComponent } from './components/students/attendence/attendence.component';
 import { MainLayoutComponent } from './components/reuable_components/layout/main-layout/main-layout.component';
@@ -39,6 +38,7 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 
 import { environment } from '../environments/environment';
 import { AuthInterceptor } from './interceptors/auth-interceptor.service';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +47,6 @@ import { AuthInterceptor } from './interceptors/auth-interceptor.service';
     SidebarComponent,
     LoginComponent,
     HeaderComponent,
-    DashboardComponent,
     AttendenceComponent,
     MainLayoutComponent,
     TeachersattendenceComponent,
@@ -57,10 +56,7 @@ import { AuthInterceptor } from './interceptors/auth-interceptor.service';
     HomeworkComponent,
     SalariesComponent,
     PaymentsComponent,
-    // CalendarComponent,
-    // TimeTableComponent,
-    // MessagingComponent,
-    // TransportComponent,
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,

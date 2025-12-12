@@ -11,11 +11,9 @@ import { Subscription } from 'rxjs';
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   activeItem: string = '';
-
-  // Full user object coming from PostgreSQL via AuthService
   currentUser: AppUser | null = null;
   userRole: string | null = null;
-
+  
   isOpen = {
     students: false,
     teachers: false,
@@ -30,10 +28,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Subscribe to auth state so sidebar reacts to login / logout
     this.authSub = this.auth.getAuthState().subscribe(user => {
       this.currentUser = user || null;
       this.userRole = user?.role ?? null;
+      // Auto-expand students section for non-superadmins
+      if (!this.isSupAdmin()) {
+        this.isOpen.students = true;
+      }
     });
   }
 

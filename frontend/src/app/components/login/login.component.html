@@ -1,59 +1,57 @@
-<div style="display: flex; height: 100vh;">
-  <!-- Left Branding Panel -->
-  <div class="login-left" style="flex: 1; display: flex; align-items: center; justify-content: center;">
-    <div class="logo">
-      <img src="./bg5.jpg" alt="Logo" style="max-width: 100%; max-height: 100%;" />
-    </div>
+<div class="flex h-screen bg-white">
+  <div class="hidden md:flex flex-1 items-center justify-center">
+    <img src="./bg5.jpg" alt="Logo" class="w-full h-full object-cover" />
   </div>
 
-  <!-- Right Form Panel -->
-  <div class="login-right" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Montserrat', Arial, sans-serif;">
-    <h1>ClimEduSmart</h1>
-    <p>School Management System</p>
-    <h2>Login</h2>
+  <div class="flex-1 flex flex-col justify-center items-center p-6 md:p-10 font-[Montserrat]">
+    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">ClimEduSmart</h1>
+    <p class="text-gray-600 mb-8">School Management System</p>
+    <h2 class="text-xl md:text-2xl font-semibold text-gray-900 mb-6">Login</h2>
 
-    <form (ngSubmit)="login()" style="width: 100%; max-width: 350px;">
-      <label>Email Address</label>
+    <form (ngSubmit)="login()" class="w-full max-w-sm">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
       <input
         type="email"
         [(ngModel)]="email"
         name="email"
         required
         placeholder="Enter your email"
-        style="width: 100%; padding: 10px; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px;"
-        />
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2  focus:border-transparent"
+      />
 
-        <label>Password</label>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+      <input
+        type="password"
+        [(ngModel)]="password"
+        name="password"
+        required
+        placeholder="Enter your password"
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2  focus:border-transparent"
+      />
+
+      <div class="flex items-center mb-6">
         <input
-          type="password"
-          [(ngModel)]="password"
-          name="password"
-          required
-          placeholder="Enter your password"
-          style="width: 100%; padding: 10px; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px;"
-          />
-
-          <div class="form-footer" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <label >
-              <input  type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
-              Remember me
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            class="primary-btn"
-            [disabled]="isLoading"
-            style="width: 100%; background-color: #3498db; color: white; border: none; padding: 10px; font-weight: bold; border-radius: 4px; cursor: pointer;"
-            >
-            {{ isLoading ? 'Signing In...' : 'Sign In' }}
-          </button>
-
-          @if (errorMessage) {
-            <div style="color: red; margin-top: 1rem;">
-              {{ errorMessage }}
-            </div>
-          }
-        </form>
+          type="checkbox"
+          [(ngModel)]="rememberMe"
+          name="rememberMe"
+          class="h-4 w-4 border-gray-300 rounded "
+        />
+        <label class="ml-2 text-sm text-gray-600">Remember me</label>
       </div>
-    </div>
+
+      <button
+        type="submit"
+        [disabled]="isLoading"
+        class="w-full bg-gray-900 text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ isLoading ? 'Signing In...' : 'Sign In' }}
+      </button>
+
+      @if (errorMessage) {
+        <div class="mt-4 text-red-600 text-sm text-center">
+          {{ errorMessage }}
+        </div>
+      }
+    </form>
+  </div>
+</div>

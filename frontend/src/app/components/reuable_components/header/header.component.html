@@ -1,17 +1,23 @@
-<div class="header">
-  <!-- <button class="back-btn">
-    <mat-icon>arrow_back</mat-icon>
-  </button> -->
-
-  <div class="search-box">
-    <mat-icon>search</mat-icon>
-    <input type="text" placeholder="Search" />
+<div class="flex items-center justify-between bg-gray-100 px-5 py-3 h-16 mt-0.5">
+  <div class="flex-1 flex items-center bg-gray-200 rounded-full mx-5 px-4 py-2.5 max-w-xl">
+    <mat-icon class="text-gray-500 mr-3">search</mat-icon>
+    <input 
+      type="text" 
+      placeholder="Search" 
+      class="border-none outline-none bg-transparent text-gray-800 w-full text-base"
+    />
   </div>
 
-  <div class="header-icons">
-    <button><mat-icon>notifications</mat-icon></button>
-    <button><mat-icon>chat</mat-icon></button>
-    <button><mat-icon>settings</mat-icon></button>
-    <img src="./logo.png" alt="User" class="avatar" />
+  <div class="flex gap-4">
+    <button class="w-10 h-10 flex bg-gray-200 border-none rounded-full cursor-pointer text-gray-800 hover:bg-gray-300 transition-colors">
+      <mat-icon>notifications</mat-icon>
+    </button>
+    <button class="w-10 h-10 bg-gray-200 border-none rounded-full cursor-pointer text-gray-800 hover:bg-gray-300 transition-colors">
+      <mat-icon>chat</mat-icon>
+    </button>
+    <button class="w-10 h-10 bg-gray-200 border-none rounded-full cursor-pointer text-gray-800 hover:bg-gray-300 transition-colors">
+      <mat-icon>settings</mat-icon>
+    </button>
+    <img src="./logo.png" alt="User" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200" />
   </div>
 </div>

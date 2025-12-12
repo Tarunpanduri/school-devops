@@ -1,77 +1,59 @@
-<!-- frontend/src/app/components/teachers/teachersattendence/teachersattendence.component.html -->
-<div class="attendance-container">
-  <!-- Top Controls -->
-  <div class="controls">
-    <label>
+<div class="p-4 overflow-x-auto">
+  <div class="flex items-center justify-between bg-gray-100 p-2.5 rounded-lg border border-gray-300 flex-wrap gap-4 mb-2.5">
+    <label class="flex items-center gap-2.5 text-lg font-medium">
       Select Month:
-      <input type="month" [(ngModel)]="selectedMonth" (change)="updateDaysInMonth()" />
+      <input type="month" [(ngModel)]="selectedMonth" (change)="updateDaysInMonth()" class="px-4 py-2 text-base border border-gray-400 rounded-lg bg-white appearance-none" />
     </label>
-
-    <label>
+    <label class="flex items-center gap-2.5 text-lg font-medium">
       Select Department:
-      <select [(ngModel)]="selectedDepartment">
+      <select [(ngModel)]="selectedDepartment" class="px-4 py-2 text-base border border-gray-400 rounded-lg bg-white appearance-none">
         <option value="">-- Select --</option>
         @for (dept of departmentList; track dept) {
           <option [value]="dept">{{ dept }}</option>
         }
       </select>
     </label>
-
-    <button (click)="loadTeachers()" class="search-btn">Search</button>
+    <button (click)="loadTeachers()" class="bg-blue-600 text-white border-none px-5 py-2.5 font-bold rounded cursor-pointer hover:bg-blue-700 h-fit self-end transition-colors">Search</button>
   </div>
 
-  <!-- Attendance Table -->
   @if (teachers.length > 0) {
-    <div class="table-wrapper">
-      <table class="attendance-table">
+    <div class="overflow-x-auto w-full [scrollbar-width:thin]">
+      <table class="w-full border-collapse mt-4 min-w-[900px]">
         <thead>
           <tr>
-            <th class="sticky-col">Teacher ID</th>
-            <th class="sticky-col-2">Name</th>
+            <th class="sticky left-0 bg-gray-100 font-bold text-center p-2 border border-gray-300 z-30 min-w-[80px] max-w-[120px] whitespace-nowrap">Teacher ID</th>
+            <th class="sticky left-[95px] bg-gray-100 font-bold text-center p-2 border border-gray-300 z-30 min-w-[150px] max-w-[220px] whitespace-nowrap after:content-[''] after:absolute after:top-0 after:right-0 after:h-full after:w-0.5 after:bg-gray-200">Name</th>
             @for (day of days; track day + selectedMonth) {
-              <th>{{ day }}</th>
+              <th class="sticky top-0 bg-gray-100 font-bold text-center p-2 border border-gray-300 z-20">{{ day }}</th>
             }
           </tr>
         </thead>
         <tbody>
           @for (teacher of teachers; track teacher.teacherId) {
             <tr>
-              <td class="sticky-col">{{ teacher.teacherId }}</td>
-              <td class="sticky-col-2">
+              <td class="sticky left-0 bg-white text-center p-2 border border-gray-300 z-10 min-w-[80px] max-w-[120px] whitespace-nowrap">{{ teacher.teacherId }}</td>
+              <td class="sticky left-[95px] bg-white text-center p-2 border border-gray-300 z-10 min-w-[150px] max-w-[220px] whitespace-nowrap after:content-[''] after:absolute after:top-0 after:right-0 after:h-full after:w-0.5 after:bg-gray-200">
                 {{ teacher.firstName }} {{ teacher.lastName }}
               </td>
               @for (day of days; track day + selectedMonth) {
-                <td
+                <td 
                   [ngClass]="{
-                    'locked-present':
-                      isCheckboxDisabled($any(teacher).id, day) &&
-                      (attendanceData[$any(teacher).id]?.[day] === true) &&
-                      isToday(day),
-                    'locked-absent':
-                      isCheckboxDisabled($any(teacher).id, day) &&
-                      (attendanceData[$any(teacher).id]?.[day] === false) &&
-                      isToday(day),
-                    'locked-frozen': !isToday(day)
+                    'bg-green-100 border-green-200': isCheckboxDisabled($any(teacher).id, day) &&
+                      (attendanceData[$any(teacher).id]?.[day] === true) && isToday(day),
+                    'bg-red-100 border-red-200': isCheckboxDisabled($any(teacher).id, day) &&
+                      (attendanceData[$any(teacher).id]?.[day] === false) && isToday(day),
+                    'bg-gray-100 border-gray-200': !isToday(day)
                   }"
+                  class="border border-gray-300 p-2 text-center"
                 >
-                  <div
-                    class="attendance-cell"
+                  <div 
+                    class="attendance-cell cursor-pointer p-1 flex justify-center items-center"
                     [ngClass]="{
-                      'present':
-                        attendanceData[$any(teacher).id]?.[day] === true &&
-                        isToday(day),
-                      'absent':
-                        attendanceData[$any(teacher).id]?.[day] === false &&
-                        isToday(day),
-                      'frozen-present':
-                        attendanceData[$any(teacher).id]?.[day] === true &&
-                        !isToday(day),
-                      'frozen-absent':
-                        attendanceData[$any(teacher).id]?.[day] === false &&
-                        !isToday(day),
-                      'frozen':
-                        attendanceData[$any(teacher).id]?.[day] === null ||
-                        attendanceData[$any(teacher).id]?.[day] === undefined
+                      'bg-green-300': attendanceData[$any(teacher).id]?.[day] === true && isToday(day),
+                      'bg-red-300': attendanceData[$any(teacher).id]?.[day] === false && isToday(day),
+                      'bg-green-100': attendanceData[$any(teacher).id]?.[day] === true && !isToday(day),
+                      'bg-red-100': attendanceData[$any(teacher).id]?.[day] === false && !isToday(day),
+                      'bg-gray-100': attendanceData[$any(teacher).id]?.[day] === null || attendanceData[$any(teacher).id]?.[day] === undefined
                     }"
                     (click)="markPresent($any(teacher).id, day, $event)"
                     (dblclick)="markAbsent($any(teacher).id, day, $event)"
@@ -81,6 +63,7 @@
                       type="checkbox"
                       [checked]="attendanceData[$any(teacher).id]?.[day] === true"
                       [disabled]="isCheckboxDisabled($any(teacher).id, day)"
+                      class="w-4.5 h-4.5 accent-green-500 cursor-pointer"
                     />
                   </div>
                 </td>
@@ -93,18 +76,17 @@
   }
 
   @if (teachers.length > 0) {
-    <button (click)="submitAttendance()" class="submit-btn">
+    <button (click)="submitAttendance()" class="bg-green-600 text-white border-none px-5 py-2.5 font-bold rounded cursor-pointer mt-3 hover:bg-green-700 transition-colors">
       Submit Attendance
     </button>
   }
 
-  <!-- Modal -->
   @if (modalVisible) {
-    <div class="modal-overlay">
-      <div class="modal-box">
-        <h3>{{ modalTitle }}</h3>
-        <p>{{ modalMessage }}</p>
-        <button (click)="modalVisible = false" class="close-btn">Close</button>
+    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg text-center max-w-[400px] w-11/12">
+        <h3 class="mt-0 text-xl text-gray-800 mb-5">{{ modalTitle }}</h3>
+        <p class="text-base text-gray-600">{{ modalMessage }}</p>
+        <button (click)="modalVisible = false" class="mt-4 bg-blue-600 text-white border-none px-5 py-2 rounded cursor-pointer hover:bg-blue-700 transition-colors">Close</button>
       </div>
     </div>
   }

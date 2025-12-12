@@ -1,138 +1,112 @@
-<div class="container">
+<div class="p-5">
+  <button (click)="openForm()" class="ml-auto  bg-blue-800 text-white p-2 rounded border-none text-sm cursor-pointer flex items-center gap-2 hover:bg-blue-700 mt-5.5 transition-colors">+ Add New Student</button>
 
-  <button (click)="openForm()" class="add-btn">+ Add New Student</button>
-
-  <!-- FILTERS -->
-  <div class="filters">
-    <div>
-      <label>Select Class</label>
-      <select [(ngModel)]="selectedFilterClass" (change)="onClassChange($event)">
+  <div class="flex flex-wrap items-end mb-5">
+    <div class="flex-1">
+      <label class="block text-sm font-medium mb-1.5">Select Class</label>
+      <select [(ngModel)]="selectedFilterClass" (change)="onClassChange($event)" class="w-3/5 px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-800 outline-none focus:border-blue-500">
         <option value="">All Classes</option>
         @for (c of classes; track c) {
           <option [value]="c">{{ c }}</option>
         }
       </select>
     </div>
-
-    <div>
-      <label>Select Section</label>
-      <select [(ngModel)]="selectedFilterSection" (change)="onSectionChange($event)">
+    <div class="flex-1">
+      <label class="block text-sm font-medium mb-1.5">Select Section</label>
+      <select [(ngModel)]="selectedFilterSection" (change)="onSectionChange($event)" class="w-3/5 px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-800 outline-none focus:border-blue-500">
         <option value="">All Sections</option>
         @for (s of filterSections; track s) {
           <option [value]="s">{{ s }}</option>
         }
       </select>
     </div>
-
-    <div>
-      <label>Search</label>
-      <input type="text" placeholder="Adm No / Name" [(ngModel)]="searchTerm" (input)="applyFilters()">
+    <div class="flex-1">
+      <label class="block text-sm font-medium mb-1.5">Search</label>
+      <input type="text" placeholder="Adm No / Name" [(ngModel)]="searchTerm" (input)="applyFilters()" class="w-3/5 px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-800 outline-none placeholder-gray-400 focus:border-blue-500">
     </div>
   </div>
 
-  <!-- FORM MODAL -->
   @if (showForm) {
-    <div class="form-modal">
-      <div class="form-content">
-        @if (isViewMode) {
-          <h3>View Student</h3>
+  <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div class="bg-white p-7.5 md:p-10 rounded-lg w-full max-w-[400px] max-h-[600px] overflow-y-auto shadow-lg">
+      @if (isViewMode) {<h3 class="mb-5 text-xl md:text-2xl text-center">View Student</h3>}
+      @if (isEditMode) {<h3 class="mb-5 text-xl md:text-2xl text-center">Edit Student</h3>}
+      @if (!isEditMode && !isViewMode) {<h3 class="mb-5 text-xl md:text-2xl text-center">Add Student</h3>}
+      <form #studentForm="ngForm" (ngSubmit)="submitForm(studentForm)">
+        <div class="flex flex-col gap-4">
+          <input type="text" placeholder="Admission Number" name="admissionNumber" [(ngModel)]="selectedStudent.admissionNumber" [readonly]="isViewMode" required class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+          <input type="text" placeholder="First Name" name="firstName" [(ngModel)]="selectedStudent.firstName" [readonly]="isViewMode" required class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+          <input type="text" placeholder="Last Name" name="lastName" [(ngModel)]="selectedStudent.lastName" [readonly]="isViewMode" required class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+          <select name="gender" [(ngModel)]="selectedStudent.gender" [disabled]="isViewMode" required class="px-3.5 py-3 text-sm border border-gray-300 rounded bg-white outline-none focus:border-blue-500">
+            <option value="" disabled>Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="date" placeholder="Date of Birth" name="dateOfBirth" [(ngModel)]="selectedStudent.dateOfBirth" [readonly]="isViewMode" required class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+          <input type="text" placeholder="Current Class" name="currentClass" [(ngModel)]="selectedStudent.currentClass" [readonly]="isViewMode" required class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+          <input type="text" placeholder="Current Section" name="currentSection" [(ngModel)]="selectedStudent.currentSection" [readonly]="isViewMode" required class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+          <input type="text" placeholder="Phone Number" name="phoneNumber" [(ngModel)]="selectedStudent.phoneNumber" [readonly]="isViewMode" class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+          <input type="email" placeholder="Email" name="email" [(ngModel)]="selectedStudent.email" [readonly]="isViewMode" class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+          <input type="text" placeholder="Place" name="Place" [(ngModel)]="selectedStudent.Place" [readonly]="isViewMode" class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+          <input type="text" placeholder="Fee" name="fee" [(ngModel)]="selectedStudent.fee" [readonly]="isViewMode" class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+          <input type="text" placeholder="Father's Name" name="fatherName" [(ngModel)]="selectedStudent.fatherName" [readonly]="isViewMode" class="px-3.5 py-3 text-sm border border-gray-300 rounded outline-none focus:border-blue-500">
+        </div>
+        @if (!isViewMode) {
+        <button type="submit" [disabled]="!studentForm.valid" class="w-full py-3 text-sm bg-blue-800 text-white rounded border-none cursor-pointer mt-2.5 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">{{ isEditMode ? 'Update' : 'Submit' }}</button>
         }
-        @if (isEditMode) {
-          <h3>Edit Student</h3>
-        }
-        @if (!isEditMode && !isViewMode) {
-          <h3>Add Student</h3>
-        }
-        <form #studentForm="ngForm" (ngSubmit)="submitForm(studentForm)">
-          <div class="form-grid">
-            <input type="text" placeholder="Admission Number" name="admissionNumber"
-              [(ngModel)]="selectedStudent.admissionNumber" [readonly]="isViewMode" required>
-              <input type="text" placeholder="First Name" name="firstName"
-                [(ngModel)]="selectedStudent.firstName" [readonly]="isViewMode" required>
-                <input type="text" placeholder="Last Name" name="lastName"
-                  [(ngModel)]="selectedStudent.lastName" [readonly]="isViewMode" required>
-                  <select name="gender" [(ngModel)]="selectedStudent.gender" [disabled]="isViewMode" required>
-                    <option value="" disabled>Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  <input type="date" placeholder="Date of Birth" name="dateOfBirth"
-                    [(ngModel)]="selectedStudent.dateOfBirth" [readonly]="isViewMode" required>
-                    <input type="text" placeholder="Current Class" name="currentClass"
-                      [(ngModel)]="selectedStudent.currentClass" [readonly]="isViewMode" required>
-                      <input type="text" placeholder="Current Section" name="currentSection"
-                        [(ngModel)]="selectedStudent.currentSection" [readonly]="isViewMode" required>
-                        <input type="text" placeholder="Phone Number" name="phoneNumber"
-                          [(ngModel)]="selectedStudent.phoneNumber" [readonly]="isViewMode">
-                          <input type="email" placeholder="Email" name="email"
-                            [(ngModel)]="selectedStudent.email" [readonly]="isViewMode">
-                            <input type="text" placeholder="Place" name="Place"
-                              [(ngModel)]="selectedStudent.Place" [readonly]="isViewMode">
-                              <input type="text" placeholder="Fee" name="fee"
-                                [(ngModel)]="selectedStudent.fee" [readonly]="isViewMode">
-                                <input type="text" placeholder="Father's Name" name="fatherName"
-                                  [(ngModel)]="selectedStudent.fatherName" [readonly]="isViewMode">
-                                </div>
-                                @if (!isViewMode) {
-                                  <button type="submit" [disabled]="!studentForm.valid">
-                                    {{ isEditMode ? 'Update' : 'Submit' }}
-                                  </button>
-                                }
-                                <button type="button" (click)="closeForm()" class="close-btn">Close</button>
-                              </form>
-                            </div>
-                          </div>
-                        }
+        <button type="button" (click)="closeForm()" class="w-full py-3 text-sm bg-gray-300 text-gray-800 rounded border-none cursor-pointer mt-2.5 hover:bg-gray-400 transition-colors">Close</button>
+      </form>
+    </div>
+  </div>
+  }
 
-                        <!-- STUDENT TABLE -->
-                        @if (filteredStudents.length > 0) {
-                          <table class="student-table">
-                            <thead>
-                              <tr>
-                                <th>Adm No</th>
-                                <th>Name</th>
-                                <th>Class</th>
-                                <th>Section</th>
-                                <th>DOB</th>
-                                <th>Gender</th>
-                                <th>Father Name</th>
-                                <th>Phone</th>
-                                <th>Email</th>
-                                <th>Place</th>
-                                <th>Fee</th>
-                                <th>Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              @for (student of filteredStudents; track student) {
-                                <tr>
-                                  <td>{{ student.admissionNumber }}</td>
-                                  <td>{{ student.firstName }} {{ student.lastName }}</td>
-                                  <td>{{ student.currentClass }}</td>
-                                  <td>{{ student.currentSection }}</td>
-                                  <td>{{ student.dateOfBirth }}</td>
-                                  <td>{{ student.gender }}</td>
-                                  <td>{{ student.fatherName }}</td>
-                                  <td>{{ student.phoneNumber }}</td>
-                                  <td>{{ student.email }}</td>
-                                  <td>{{ student.Place }}</td>
-                                  <td>{{ student.fee }}</td>
-                                  <td>
-                                    <button (click)="viewDetails(student)">
-                                      <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                    <button (click)="editStudent(student)">
-                                      <i class="fa-light fa-pen-to-square"></i>
-                                    </button>
-                                    <button (click)="deleteStudent(student)">
-                                      <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                  </td>
-                                </tr>
-                              }
-                            </tbody>
-                          </table>
-                        }
-
-                      </div>
+  @if (filteredStudents.length > 0) {
+  <table class="w-full border-collapse text-sm shadow-sm">
+    <thead>
+      <tr>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Adm No</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Name</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Class</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Section</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">DOB</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Gender</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Father Name</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Phone</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Email</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Place</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Fee</th>
+        <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (student of filteredStudents; track student) {
+      <tr>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.admissionNumber }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.firstName }} {{ student.lastName }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.currentClass }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.currentSection }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.dateOfBirth }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.gender }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.fatherName }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.phoneNumber }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.email }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.Place }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ student.fee }}</td>
+        <td class="p-2.5 md:p-3 border border-gray-300 text-center">
+          <button (click)="viewDetails(student)" class="text-blue-600 hover:text-blue-800 transition-colors">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+          <button (click)="editStudent(student)" class="text-green-600 hover:text-green-800 transition-colors ml-2">
+            <i class="fa-light fa-pen-to-square"></i>
+          </button>
+          <button (click)="deleteStudent(student)" class="text-red-600 hover:text-red-800 transition-colors ml-2">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  }
+</div>

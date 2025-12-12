@@ -1,103 +1,98 @@
-<div class="attendance-container">
-  <!-- Top Controls -->
-  <div class="controls">
-    <label>
+<div class="p-4 overflow-x-auto">
+  <div class="flex items-center justify-between bg-gray-100 p-2.5 rounded-lg border border-gray-300 flex-wrap gap-4 mb-2.5">
+    <label class="flex items-center gap-2.5 text-lg font-medium">
       Select Month:
-      <input type="month" [(ngModel)]="selectedMonth" (change)="updateDaysInMonth()" />
+      <input type="month" [(ngModel)]="selectedMonth" (change)="updateDaysInMonth()" class="px-4 py-2 text-base border border-gray-400 rounded-lg bg-white appearance-none" />
     </label>
-
-    <label>
+    <label class="flex items-center gap-2.5 text-lg font-medium">
       Select Class:
-      <select [(ngModel)]="selectedClass" (change)="onClassChange()">
+      <select [(ngModel)]="selectedClass" (change)="onClassChange()" class="px-4 py-2 text-base border border-gray-400 rounded-lg bg-white appearance-none">
         <option value="">--Select--</option>
         @for (cls of classList; track cls) {
           <option [value]="cls">{{ cls }}</option>
         }
       </select>
     </label>
-
-    <label>
+    <label class="flex items-center gap-2.5 text-lg font-medium">
       Select Section:
-      <select [(ngModel)]="selectedSection" (change)="updateSelectedGrade()">
+      <select [(ngModel)]="selectedSection" (change)="updateSelectedGrade()" class="px-4 py-2 text-base border border-gray-400 rounded-lg bg-white appearance-none">
         <option value="">--Select--</option>
         @for (sec of sectionList; track sec) {
           <option [value]="sec">{{ sec }}</option>
         }
       </select>
     </label>
-
-    <button (click)="searchStudents()" class="search-btn">Search</button>
+    <button (click)="searchStudents()" class="bg-blue-600 text-white border-none px-5 py-2.5 font-bold rounded cursor-pointer hover:bg-blue-700 h-fit self-end transition-colors">Search</button>
   </div>
 
-  <!-- Attendance Table -->
   @if (students.length > 0) {
-    <div class="table-wrapper">
-      <table class="attendance-table">
+    <div class="overflow-x-auto w-full [scrollbar-width:thin]">
+      <table class="w-full border-collapse mt-4 min-w-[900px]">
         <thead>
           <tr>
-            <th class="sticky-col">Student ID</th>
-            <th class="sticky-col-2">Name</th>
+            <th class="sticky left-0 bg-gray-100 font-bold text-center p-2 border border-gray-300 z-30 min-w-[80px] max-w-[120px] whitespace-nowrap">STUDENT ID</th>
+            <th class="sticky left-[105px] bg-gray-100 font-bold text-center p-2 border border-gray-300 z-30 min-w-[150px] max-w-[220px] whitespace-nowrap after:content-[''] after:absolute after:top-0 after:right-0 after:h-full after:w-0.5 after:bg-gray-200">Name</th>
             @for (day of days; track day) {
-              <th>{{ day }}</th>
+              <th class="sticky top-0 bg-gray-100 font-bold text-center p-2 border border-gray-300 z-20">{{ day }}</th>
             }
           </tr>
         </thead>
         <tbody>
           @for (student of students; track student) {
             <tr>
-              <td class="sticky-col">{{ student.Studentid }}</td>
-              <td class="sticky-col-2">{{ student.firstName }} {{ student.lastName }}</td>
+              <td class="sticky left-0 bg-white text-center p-2 border border-gray-300 z-10 min-w-[80px] max-w-[120px] whitespace-nowrap">{{ student.Studentid }}</td>
+              <td class="sticky left-[105px] bg-white text-center p-2 border border-gray-300 z-10 min-w-[150px] max-w-[220px] whitespace-nowrap after:content-[''] after:absolute after:top-0 after:right-0 after:h-full after:w-0.5 after:bg-gray-200">{{ student.firstName }} {{ student.lastName }}</td>
               @for (day of days; track day) {
-                <td
-            [ngClass]="{
-              'locked-present': isCheckboxDisabled(student.id, day) && attendanceData[student.id][day] && isToday(day),
-              'locked-absent': isCheckboxDisabled(student.id, day) && !attendanceData[student.id][day] && isToday(day),
-              'locked-frozen': !isToday(day)
-            }"
-                  >
-                  <div
-                    class="attendance-cell"
-              [ngClass]="{
-                'present': attendanceData[student.id][day] === true && isToday(day),
-                'absent': attendanceData[student.id][day] === false && isToday(day),
-                'frozen-present': attendanceData[student.id][day] === true && !isToday(day),
-                'frozen-absent': attendanceData[student.id][day] === false && !isToday(day),
-                'frozen': attendanceData[student.id][day] === null || attendanceData[student.id][day] === undefined
-              }"
+                <td 
+                  [ngClass]="{
+                    'bg-green-100 border-green-200': isCheckboxDisabled(student.id, day) && attendanceData[student.id][day] && isToday(day),
+                    'bg-red-100 border-red-200': isCheckboxDisabled(student.id, day) && !attendanceData[student.id][day] && isToday(day),
+                    'bg-gray-100 border-gray-200': !isToday(day)
+                  }"
+                  class="border border-gray-300 p-2 text-center"
+                >
+                  <div 
+                    class="attendance-cell cursor-pointer p-1 flex justify-center items-center"
+                    [ngClass]="{
+                      'bg-green-300': attendanceData[student.id][day] === true && isToday(day),
+                      'bg-red-300': attendanceData[student.id][day] === false && isToday(day),
+                      'bg-green-100': attendanceData[student.id][day] === true && !isToday(day),
+                      'bg-red-100': attendanceData[student.id][day] === false && !isToday(day),
+                      'bg-gray-100': attendanceData[student.id][day] === null || attendanceData[student.id][day] === undefined
+                    }"
                     (click)="markPresent(student.id, day, $event)"
                     (dblclick)="markAbsent(student.id, day, $event)"
                     (click)="trackClick(student.id, day)"
-                    >
-                    <input
-                      type="checkbox"
+                  >
+                    <input 
+                      type="checkbox" 
                       [checked]="attendanceData[student.id][day] === true"
                       [disabled]="isCheckboxDisabled(student.id, day)"
-                      />
-                    </div>
-                  </td>
-                }
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    }
+                      class="w-4.5 h-4.5 accent-green-500 cursor-pointer"
+                    />
+                  </div>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
-    <!-- Submit Button -->
-    @if (students.length > 0) {
-      <button (click)="submitAttendance()" class="submit-btn">
-        Submit Attendance
-      </button>
-    }
-  </div>
+  @if (students.length > 0) {
+    <button (click)="submitAttendance()" class="bg-green-600 text-white border-none px-5 py-2.5 font-bold rounded cursor-pointer mt-3 hover:bg-green-700 transition-colors">
+      Submit Attendance
+    </button>
+  }
 
-  <!-- Modal -->
   @if (modalVisible) {
-    <div class="modal-overlay">
-      <div class="modal-box">
-        <h3>{{ modalTitle }}</h3>
-        <p>{{ modalMessage }}</p>
-        <button (click)="modalVisible = false" class="close-btn">Close</button>
+    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg text-center max-w-[400px] w-11/12">
+        <h3 class="mt-0 text-xl text-gray-800 mb-5">{{ modalTitle }}</h3>
+        <p class="text-base text-gray-600">{{ modalMessage }}</p>
+        <button (click)="modalVisible = false" class="mt-4 bg-blue-600 text-white border-none px-5 py-2 rounded cursor-pointer hover:bg-blue-700 transition-colors">Close</button>
       </div>
     </div>
   }
+</div>

@@ -1,104 +1,90 @@
-<div class="ss-body">
-  <div class="sidebar">
-    <div class="logo">
-      <img src="./logo.png" alt="SFS Logo" />
-      <div class="school-name">
-        <strong>S.F.S</strong><br />
-        <div class="user-info">
-          @if (currentUser) {
-          <div class="user-name">
-            {{ currentUser.display_name || currentUser.email }},
-          </div>
-          <div class="user-role">
-          {{ currentUser.role || 'user' }}
-          </div>
-          }
-        </div>
+<div class="fixed top-3 left-3 bottom-3 w-[250px] bg-black text-white p-5 flex flex-col overflow-y-auto overflow-x-hidden rounded-xl border-2 border-gray-400 [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-scrollbar-width:0] [-webkit-scrollbar-track:transparent] [-webkit-scrollbar-thumb:#444]">
+  <div class="flex items-center mb-8">
+    <img src="./logo.png" alt="SFS Logo" class="h-[50px] mr-3" />
+    <div>
+      <h1 class="text-white font-body text-lg ">S.F.S</h1>
+      @if (currentUser) {
+      <div class="flex flex-row text-gray-300 text-sm font-body">
+        <div>{{ currentUser.display_name || currentUser.email }},</div>
+        <div class="ml-1">{{ currentUser.role || 'user' }}</div>
       </div>
+      }
     </div>
+  </div>
 
+  <ul class="list-none p-0 m-0 font-body">
+    @if (isSupAdmin()) {
+    <li routerLink="/dashboard" routerLinkActive="active" class="p-3 cursor-pointer flex items-center hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">
+      <mat-icon class="mr-3 text-white [&.active]:text-black">dashboard</mat-icon> Dashboard
+    </li>
+    }
 
-
-    <ul class="nav">
-      @if (isSupAdmin()) {
-      <li routerLink="/dashboard" routerLinkActive="active">
-        <mat-icon class="icon">dashboard</mat-icon> Dashboard
-      </li>
-      }
-
-      <!-- Students Dropdown -->
-      <li (click)="toggleSection('students')" class="dropdown-toggle">
-        <mat-icon class="icon">school</mat-icon> Students
-        <mat-icon class="arrow">
-          {{ isOpen.students ? 'expand_less' : 'expand_more' }}
-        </mat-icon>
-      </li>
-      @if (isOpen.students) {
-      <ul class="dropdown">
-        <li routerLink="/students-info" routerLinkActive="active">Students-Info</li>
-        <li routerLink="/attendence" routerLinkActive="active">Attendance</li>
-        <li routerLink="/fee-structure" routerLinkActive="active">Fee Structure</li>
-        <li routerLink="/homework" routerLinkActive="active">Homework</li>
-        <li routerLink="/academics" routerLinkActive="active">Academics</li>
-      </ul>
-      }
-
-      <!-- Teachers Dropdown -->
-      <li (click)="toggleSection('teachers')" class="dropdown-toggle">
-        <mat-icon class="icon">person</mat-icon> Teachers
-        <mat-icon class="arrow">
-          {{ isOpen.teachers ? 'expand_less' : 'expand_more' }}
-        </mat-icon>
-      </li>
-      @if (isOpen.teachers) {
-      <ul class="dropdown">
-        <li routerLink="/teachers-info" routerLinkActive="active">teachers-info</li>
-        <li routerLink="/teachersattendence" routerLinkActive="active">Attendance</li>
-        <li routerLink="/salaries" routerLinkActive="active">Salaries</li>
-      </ul>
-      }
-
-      <!-- Finance Dropdown (admin only) -->
-      @if (isAdmin()) {
-      <li (click)="toggleSection('finance')" class="dropdown-toggle">
-        <mat-icon class="icon">account_balance_wallet</mat-icon> Finance
-        <mat-icon class="arrow">
-          {{ isOpen.finance ? 'expand_less' : 'expand_more' }}
-        </mat-icon>
-      </li>
-      }
-      @if (isOpen.finance) {
-      <ul class="dropdown">
-        <li routerLink="/payments" routerLinkActive="active">Payments</li>
-        <li routerLink="/expenses" routerLinkActive="active">School Expenses</li>
-      </ul>
-      }
-
-      <!-- Static Menu Items -->
-      <li routerLink="/calendar" routerLinkActive="active">
-        <mat-icon class="icon">calendar_today</mat-icon> Calendar
-      </li>
-      <li routerLink="/time-table" routerLinkActive="active">
-        <mat-icon class="icon">schedule</mat-icon>
-        Time Table
-      </li>
-      <li routerLink="/messaging" routerLinkActive="active">
-        <mat-icon class="icon">chat</mat-icon>
-        Message
-      </li>
-      <li routerLink="/Transport" routerLinkActive="active">
-        <mat-icon class="icon">directions_bus</mat-icon> Transport
-      </li>
-      <li>
-        <mat-icon class="icon">settings</mat-icon> Settings
-      </li>
+    <li (click)="toggleSection('students')" class="p-3 cursor-pointer flex items-center justify-between hover:bg-gray-800 rounded transition-colors">
+      <div class="flex items-center">
+        <mat-icon class="mr-3">school</mat-icon> Students
+      </div>
+      <mat-icon>{{ isOpen.students ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </li>
+    @if (isOpen.students || !isSupAdmin()) {
+    <ul class="list-none pl-5 text-muted text-sm text-right font-body">
+      <li routerLink="/students-info" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Students-Info</li>
+      <li routerLink="/attendence" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Attendance</li>
+      <li routerLink="/fee-structure" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Fee Structure</li>
+      <li routerLink="/homework" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Homework</li>
+      <li routerLink="/academics" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Academics</li>
     </ul>
+    }
 
-    <div class="logout">
-      <button (click)="logout()">
-        Log Out
-        <mat-icon class="icon" style="color: black;">logout</mat-icon>
-      </button>
-    </div>
+    <li (click)="toggleSection('teachers')" class="p-3 cursor-pointer flex items-center justify-between hover:bg-gray-800 rounded transition-colors">
+      <div class="flex items-center">
+        <mat-icon class="mr-3">person</mat-icon> Teachers
+      </div>
+      <mat-icon>{{ isOpen.teachers ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </li>
+    @if (isOpen.teachers) {
+    <ul class="list-none pl-5 text-muted text-sm text-right font-body">
+      <li routerLink="/teachers-info" routerLinkActive="active" class="p-2 cursor-pointer hover:bg-gray-800 rounded text-gray-300 transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">teachers-info</li>
+      <li routerLink="/teachersattendence" routerLinkActive="active" class="p-2 cursor-pointer hover:bg-gray-800 text-gray-300 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Attendance</li>
+      <li routerLink="/salaries" routerLinkActive="active" class="p-2 cursor-pointer hover:bg-gray-800 rounded text-gray-300 transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Salaries</li>
+    </ul>
+    }
+
+    @if (isAdmin()) {
+    <li (click)="toggleSection('finance')" class="p-3 cursor-pointer flex items-center justify-between hover:bg-gray-800 rounded transition-colors">
+      <div class="flex items-center">
+        <mat-icon class="mr-3">account_balance_wallet</mat-icon> Finance
+      </div>
+      <mat-icon>{{ isOpen.finance ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </li>
+    }
+    @if (isOpen.finance) {
+    <ul class="list-none pl-5 text-muted text-sm text-right font-body">
+      <li routerLink="/payments" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Payments</li>
+      <li routerLink="/expenses" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">School Expenses</li>
+    </ul>
+    }
+
+    <li routerLink="/calendar" routerLinkActive="active" class="p-3 cursor-pointer flex items-center hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">
+      <mat-icon class="mr-3 [&.active]:text-black">calendar_today</mat-icon> Calendar
+    </li>
+    <li routerLink="/time-table" routerLinkActive="active" class="p-3 cursor-pointer flex items-center hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">
+      <mat-icon class="mr-3 [&.active]:text-black">schedule</mat-icon> Time Table
+    </li>
+    <li routerLink="/messaging" routerLinkActive="active" class="p-3 cursor-pointer flex items-center hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">
+      <mat-icon class="mr-3 [&.active]:text-black">chat</mat-icon> Message
+    </li>
+    <li routerLink="/Transport" routerLinkActive="active" class="p-3 cursor-pointer flex items-center hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">
+      <mat-icon class="mr-3 [&.active]:text-black">directions_bus</mat-icon> Transport
+    </li>
+    <li class="p-3 cursor-pointer flex items-center hover:bg-gray-800 rounded transition-colors">
+      <mat-icon class="mr-3">settings</mat-icon> Settings
+    </li>
+  </ul>
+
+  <div class="mt-auto pt-10">
+    <button (click)="logout()" class="bg-white text-black border-none p-3 cursor-pointer w-full font-bold flex justify-between items-center rounded-lg hover:bg-gray-100 transition-colors font-body">
+      Log Out
+      <mat-icon class="text-black">logout</mat-icon>
+    </button>
   </div>
 </div>
