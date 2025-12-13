@@ -1,0 +1,141 @@
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-4">Fee Collection</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div>
+      <label class="block text-sm mb-1">Academic Year</label>
+      <select [(ngModel)]="selectedAcademicYear" (change)="onAcademicClassChange()" class="px-3 py-2 border rounded w-full">
+        <option *ngFor="let y of academicYears" [value]="y">{{ y }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm mb-1">Class</label>
+      <select [(ngModel)]="selectedClass" (change)="onAcademicClassChange()" class="px-3 py-2 border rounded w-full">
+        <option *ngFor="let c of classes" [value]="c">{{ c }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm mb-1">Search Student (AdmNo / Name)</label>
+      <input type="text" [(ngModel)]="search" (input)="filterStudents()" class="px-3 py-2 border rounded w-full" placeholder="Search..." />
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-4 mb-6">
+    <div class="md:col-span-1">
+      <div class="bg-white rounded shadow p-3">
+        <h3 class="font-semibold mb-2">Students</h3>
+        <div class="max-h-64 overflow-auto">
+          <div *ngFor="let student of filteredStudents; trackBy: trackById" class="p-2 border-b last:border-b-0 cursor-pointer hover:bg-blue-50"
+               (click)="selectStudent(student)" [class.bg-blue-100]="selectedStudent?.id === student.id">
+            <div class="font-medium">{{ student.firstName }} {{ student.lastName }}</div>
+            <div class="text-xs text-gray-600">{{ student.admissionNumber }} • Class {{ student.currentClass }}</div>
+          </div>
+          <div *ngIf="filteredStudents.length === 0" class="text-sm text-gray-500 p-2">No students found</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="md:col-span-2">
+      <div *ngIf="selectedStudent" class="bg-white rounded shadow p-4 mb-4">
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="font-semibold">{{ selectedStudent.firstName }} {{ selectedStudent.lastName }}</h3>
+            <div class="text-sm text-gray-600">Adm: {{ selectedStudent.admissionNumber }} • Class: {{ selectedStudent.currentClass }}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm text-gray-500">Academic Year</div>
+            <div class="font-bold">{{ selectedAcademicYear }}</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 mt-4">
+          <div class="p-3 bg-gray-50 rounded border text-center">
+            <div class="text-sm text-gray-500">Total Fee</div>
+            <div class="font-bold">₹{{ totalFee | number:'1.2-2' }}</div>
+          </div>
+
+          <div class="p-3 bg-gray-50 rounded border text-center">
+            <div class="text-sm text-gray-500">Total Paid</div>
+            <div class="font-bold text-green-600">₹{{ summary?.totalPaid || 0 | number:'1.2-2' }}</div>
+          </div>
+
+          <div class="p-3 bg-gray-50 rounded border text-center">
+            <div class="text-sm text-gray-500">Due / Overpaid</div>
+            <div [ngClass]="{'text-red-600': (summary?.totalDue || 0) > 0, 'text-blue-600': (summary?.totalDue || 0) < 0}" class="font-bold">
+              ₹{{ summary?.totalDue || (totalFee - (summary?.totalPaid || 0)) | number:'1.2-2' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- payment card -->
+      <div *ngIf="selectedStudent" class="bg-white rounded shadow p-4 mb-4">
+        <h4 class="font-semibold mb-3">Collect Payment</h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+          <div>
+            <label class="block text-sm mb-1">Fee Type</label>
+            <select [(ngModel)]="selectedFeeType" class="px-3 py-2 border rounded w-full">
+              <option *ngFor="let f of feeItems" [value]="f.category">{{ f.category }} - {{ f.description || '' }} (₹{{ f.amount }})</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm mb-1">Amount</label>
+            <input type="number" [(ngModel)]="paymentAmount" class="px-3 py-2 border rounded w-full" min="0" />
+          </div>
+
+          <div>
+            <label class="block text-sm mb-1">Payment Mode</label>
+            <select [(ngModel)]="paymentMode" class="px-3 py-2 border rounded w-full">
+              <option value="Cash">Cash</option>
+              <option value="UPI">UPI</option>
+              <option value="Bank">Bank</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button (click)="submitPayment()" [disabled]="!canSubmitPayment() || loading" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            {{ loading ? 'Processing...' : 'Submit Payment' }}
+          </button>
+          <button (click)="paymentAmount = null" class="bg-gray-100 px-4 py-2 rounded">Reset</button>
+        </div>
+
+        <div *ngIf="message" class="mt-3 text-sm text-green-600">{{ message }}</div>
+      </div>
+
+      <!-- payments history -->
+      <div *ngIf="selectedStudent" class="bg-white rounded shadow p-4">
+        <h4 class="font-semibold mb-3">Payment History</h4>
+        <div *ngIf="payments?.length; else noPayments">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left">
+                <th class="py-2">Receipt</th>
+                <th class="py-2">Date</th>
+                <th class="py-2">Particular</th>
+                <th class="py-2 text-right">Amount</th>
+                <th class="py-2">Mode</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of payments">
+                <td>{{ p.receiptNo || ('RCPT-' + (p.id || p.paidOn || '') ) }}</td>
+                <td>{{ p.paidOn ? (p.paidOn | date:'short') : ('-') }}</td>
+                <td>{{ p.feeType }}</td>
+                <td class="text-right">₹{{ p.amount | number:'1.2-2' }}</td>
+                <td>{{ p.paymentMode }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noPayments>
+          <div class="text-sm text-gray-500">No payments yet for this student.</div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

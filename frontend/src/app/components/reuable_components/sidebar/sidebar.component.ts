@@ -14,8 +14,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
   currentUser: AppUser | null = null;
   userRole: string | null = null;
   
+  // For superadmins, students section starts collapsed
+  // For others, it starts expanded but can be toggled
   isOpen = {
-    students: false,
+    students: false, 
     teachers: false,
     finance: false,
   };
@@ -31,11 +33,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.authSub = this.auth.getAuthState().subscribe(user => {
       this.currentUser = user || null;
       this.userRole = user?.role ?? null;
-      // Auto-expand students section for non-superadmins
-      if (!this.isSupAdmin()) {
-        this.isOpen.students = true;
-      }
+      
+      // Initialize based on role
+      this.initializeSectionStates();
     });
+  }
+
+  private initializeSectionStates(): void {
+    // For non-superadmins, expand students section by default
+    // For superadmins, keep all collapsed by default
+    if (!this.isSupAdmin()) {
+      this.isOpen.students = true;
+    } else {
+      this.isOpen.students = false;
+    }
+    this.isOpen.teachers = false;
+    this.isOpen.finance = false;
   }
 
   ngOnDestroy(): void {
@@ -55,6 +68,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   toggleSection(section: 'students' | 'teachers' | 'finance') {
+    // Always allow toggling regardless of role
     this.isOpen[section] = !this.isOpen[section];
   }
 

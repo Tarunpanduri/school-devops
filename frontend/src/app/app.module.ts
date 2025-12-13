@@ -39,6 +39,7 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from '../environments/environment';
 import { AuthInterceptor } from './interceptors/auth-interceptor.service';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { FeeCollectionComponent } from './components/fee-collection/fee-collection.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     SalariesComponent,
     PaymentsComponent,
     DashboardComponent,
+    FeeCollectionComponent,
   ],
   imports: [
     BrowserModule,

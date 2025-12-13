@@ -17,6 +17,7 @@ import { SalariesComponent } from './components/teachers/salaries/salaries.compo
 // import { MessagingComponent } from './components/messaging/messaging.component';
 // import { TransportComponent } from './components/transport/transport.component';
 import { PaymentsComponent } from './components/payments/payments.component';
+import { FeeCollectionComponent } from './components/fee-collection/fee-collection.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -41,6 +42,7 @@ const routes: Routes = [
       // { path: 'Transport', component: TransportComponent},
       { path: 'payments', component: PaymentsComponent},
       { path: 'teachers-info', component: TeachersInfoComponent },
+      { path: 'fee-collection', component: FeeCollectionComponent }
     ]
   }
 ];

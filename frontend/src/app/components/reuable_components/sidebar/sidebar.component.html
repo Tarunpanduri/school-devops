@@ -1,8 +1,8 @@
 <div class="fixed top-3 left-3 bottom-3 w-[250px] bg-black text-white p-5 flex flex-col overflow-y-auto overflow-x-hidden rounded-xl border-2 border-gray-400 [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-scrollbar-width:0] [-webkit-scrollbar-track:transparent] [-webkit-scrollbar-thumb:#444]">
   <div class="flex items-center mb-8">
-    <img src="./logo.png" alt="SFS Logo" class="h-[50px] mr-3" />
+    <img src="https://i.ibb.co/d4hxkx4z/Screenshot-from-2025-12-13-11-45-01.png" alt="School Logo" class="h-[75px] w-[80px] object-fill rounded-lg" />
     <div>
-      <h1 class="text-white font-body text-lg ">S.F.S</h1>
+      <h1 class="text-white text-lg font-semibold">Little Buds</h1>
       @if (currentUser) {
       <div class="flex flex-row text-gray-300 text-sm font-body">
         <div>{{ currentUser.display_name || currentUser.email }},</div>
@@ -25,15 +25,15 @@
       </div>
       <mat-icon>{{ isOpen.students ? 'expand_less' : 'expand_more' }}</mat-icon>
     </li>
-    @if (isOpen.students || !isSupAdmin()) {
-    <ul class="list-none pl-5 text-muted text-sm text-right font-body">
-      <li routerLink="/students-info" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Students-Info</li>
-      <li routerLink="/attendence" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Attendance</li>
-      <li routerLink="/fee-structure" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Fee Structure</li>
-      <li routerLink="/homework" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Homework</li>
-      <li routerLink="/academics" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Academics</li>
-    </ul>
-    }
+@if (isOpen.students) {
+<ul class="list-none pl-5 text-muted text-sm text-right font-body">
+  <li routerLink="/students-info" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Students-Info</li>
+  <li routerLink="/attendence" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Attendance</li>
+  <li routerLink="/fee-structure" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Fee Structure</li>
+  <li routerLink="/homework" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Homework</li>
+  <li routerLink="/academics" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Academics</li>
+</ul>
+}
 
     <li (click)="toggleSection('teachers')" class="p-3 cursor-pointer flex items-center justify-between hover:bg-gray-800 rounded transition-colors">
       <div class="flex items-center">
@@ -59,7 +59,7 @@
     }
     @if (isOpen.finance) {
     <ul class="list-none pl-5 text-muted text-sm text-right font-body">
-      <li routerLink="/payments" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Payments</li>
+      <li routerLink="/fee-collection" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">Fee Collection</li>
       <li routerLink="/expenses" routerLinkActive="active" class="p-2 cursor-pointer text-gray-300 hover:bg-gray-800 rounded transition-colors [&.active]:bg-white [&.active]:text-black [&.active]:text-primary">School Expenses</li>
     </ul>
     }
