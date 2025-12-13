@@ -9,7 +9,7 @@ interface Student {
   id: string;
   firstName: string;
   lastName: string;
-  Studentid: string;
+  admissionNumber: string;
   CurrentClass: string | number;
   CurrentSection: string;
 }
@@ -154,23 +154,23 @@ export class AttendenceComponent implements OnInit {
       });
   }
 
-  markPresent(studentId: string, day: number, event: MouseEvent) {
-    if (this.isCheckboxDisabled(studentId, day)) return;
-    if (!this.attendanceData[studentId]) {
-      this.attendanceData[studentId] = {};
+  markPresent(admissionNumber: string, day: number, event: MouseEvent) {
+    if (this.isCheckboxDisabled(admissionNumber, day)) return;
+    if (!this.attendanceData[admissionNumber]) {
+      this.attendanceData[admissionNumber] = {};
     }
-    this.attendanceData[studentId][day] = true;
+    this.attendanceData[admissionNumber][day] = true;
   }
 
-  markAbsent(studentId: string, day: number, event: MouseEvent) {
-    if (this.isCheckboxDisabled(studentId, day)) return;
-    if (!this.attendanceData[studentId]) {
-      this.attendanceData[studentId] = {};
+  markAbsent(admissionNumber: string, day: number, event: MouseEvent) {
+    if (this.isCheckboxDisabled(admissionNumber, day)) return;
+    if (!this.attendanceData[admissionNumber]) {
+      this.attendanceData[admissionNumber] = {};
     }
-    this.attendanceData[studentId][day] = false;
+    this.attendanceData[admissionNumber][day] = false;
   }
 
-  trackClick(studentId: string, day: number) {
+  trackClick(admissionNumber: string, day: number) {
     const key = `click-${day}`;
     this.clickCountMap[key] = (this.clickCountMap[key] || 0) + 1;
 
@@ -266,7 +266,7 @@ export class AttendenceComponent implements OnInit {
     return today.toDateString() === target.toDateString();
   }
 
-  isCheckboxDisabled(studentId: string, day: number): boolean {
+  isCheckboxDisabled(admissionNumber: string, day: number): boolean {
     if (!this.isToday(day)) return true;
 
     const count =

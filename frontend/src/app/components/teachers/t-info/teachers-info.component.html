@@ -1,61 +1,58 @@
-<div class="container">
-  <button (click)="openForm()" class="add-btn">
-    <span class="material-icons">person_add</span>
+<div class="p-5">
+  <button (click)="openForm()" class="ml-auto  bg-blue-800 text-white p-2 rounded border-none text-sm cursor-pointer flex items-center gap-2 hover:bg-blue-700 mb-4 transition-colors">
+    <span class="material-icons text-base">person_add</span>
     Add New Teacher
   </button>
 
-  <!-- FILTERS -->
-  <div class="filters">
-    <div>
-      <label>Select Department</label>
-      <select [(ngModel)]="selectedDepartment" (change)="applyFilters()">
+  <div class="flex flex-wrap items-end gap-5 mb-5">
+    <div class="flex-1 min-w-[200px]">
+      <label class="block text-sm font-medium mb-1.5">Select Department</label>
+      <select [(ngModel)]="selectedDepartment" (change)="applyFilters()" class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-800 outline-none focus:border-blue-500">
         <option value="">All Departments</option>
         @for (dept of departments; track dept) {
         <option [value]="dept">{{ dept }}</option>
         }
       </select>
     </div>
-
-    <div>
-      <label>Search</label>
-      <input type="text" placeholder="ID / Name" [(ngModel)]="searchTerm" (input)="applyFilters()">
+    <div class="flex-1 min-w-[200px]">
+      <label class="block text-sm font-medium mb-1.5">Search</label>
+      <input type="text" placeholder="ID / Name" [(ngModel)]="searchTerm" (input)="applyFilters()" class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-800 outline-none placeholder-gray-400 focus:border-blue-500">
     </div>
   </div>
 
-  <!-- TEACHER TABLE -->
   <div class="table-container">
     @if (filteredTeachers.length > 0) {
-    <table class="teacher-table">
+    <table class="w-full border-collapse text-sm shadow-sm">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Department</th>
-          <th>DOB</th>
-          <th>Gender</th>
-          <th>Phone</th>
-          <th>Email</th>
-          <th>Actions</th>
+          <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">ID</th>
+          <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Name</th>
+          <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Department</th>
+          <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">DOB</th>
+          <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Gender</th>
+          <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Phone</th>
+          <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Email</th>
+          <th class="p-2.5 md:p-3 border border-gray-300 bg-blue-50 text-gray-900 font-semibold text-center">Actions</th>
         </tr>
       </thead>
       <tbody>
         @for (teacher of filteredTeachers; track teacher) {
         <tr>
-          <td>{{ teacher.teacherId }}</td>
-          <td>{{ teacher.firstName }} {{ teacher.lastName }}</td>
-          <td>{{ teacher.department }}</td>
-          <td>{{ teacher.dateOfBirth | date:'mediumDate' }}</td>
-          <td>{{ teacher.gender }}</td>
-          <td>{{ teacher.phone }}</td>
-          <td>{{ teacher.email }}</td>
-          <td class="action-btns">
-            <button mat-icon-button color="primary" (click)="viewDetails(teacher)" matTooltip="View">
+          <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ teacher.teacherId }}</td>
+          <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ teacher.firstName }} {{ teacher.lastName }}</td>
+          <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ teacher.department }}</td>
+          <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ teacher.dateOfBirth | date:'mediumDate' }}</td>
+          <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ teacher.gender }}</td>
+          <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ teacher.phone }}</td>
+          <td class="p-2.5 md:p-3 border border-gray-300 text-center">{{ teacher.email }}</td>
+          <td class="p-2.5 md:p-3 border border-gray-300 text-center action-btns">
+            <button mat-icon-button color="primary" (click)="viewDetails(teacher)" matTooltip="View" class="text-blue-600 hover:text-blue-800 transition-colors">
               <mat-icon>visibility</mat-icon>
             </button>
-            <button mat-icon-button color="accent" (click)="editTeacher(teacher)" matTooltip="Edit">
+            <button mat-icon-button color="accent" (click)="editTeacher(teacher)" matTooltip="Edit" class="text-green-600 hover:text-green-800 transition-colors">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="promptDelete(teacher)" matTooltip="Delete">
+            <button mat-icon-button color="warn" (click)="promptDelete(teacher)" matTooltip="Delete" class="text-red-600 hover:text-red-800 transition-colors">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
@@ -66,152 +63,181 @@
     }
 
     @if (filteredTeachers.length === 0) {
-    <div class="no-results">
+    <div class="py-10 text-center italic text-gray-500">
       <p>No teachers found matching your criteria.</p>
     </div>
     }
   </div>
 
-  <!-- MODAL DIALOG -->
   @if (modalVisible) {
-  <div class="modal-overlay" (click)="closeModal()">
-    <div class="modal-dialog" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3>{{ modalTitle }}</h3>
-        <button mat-icon-button (click)="closeModal()" class="close-btn">
+  <div class="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex items-center justify-center z-50" (click)="closeModal()">
+    <div class="bg-white rounded-lg w-[600px] max-w-[95%] max-h-[90vh] overflow-y-auto shadow-lg" (click)="$event.stopPropagation()">
+      <div class="flex justify-between items-center bg-blue-600 text-white p-3">
+        <h3 class="m-0 text-lg font-semibold">{{ modalTitle }}</h3>
+        <button mat-icon-button (click)="closeModal()" class="text-white hover:bg-blue-700 rounded-full">
           <mat-icon>close</mat-icon>
         </button>
       </div>
+
+
       @if (!isDeleteMode) {
-      <div class="modal-content">
-        <form #teacherForm="ngForm" (ngSubmit)="submitForm(teacherForm)">
-          <div class="form-grid">
-            <mat-form-field appearance="outline">
-              <mat-label>Teacher ID</mat-label>
-              <input matInput name="teacherId" [(ngModel)]="selectedTeacher.teacherId" required [readonly]="isViewMode">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>First Name</mat-label>
-              <input matInput name="firstName" [(ngModel)]="selectedTeacher.firstName" required [readonly]="isViewMode">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Last Name</mat-label>
-              <input matInput name="lastName" [(ngModel)]="selectedTeacher.lastName" required [readonly]="isViewMode">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Gender</mat-label>
-              <mat-select name="gender" [(ngModel)]="selectedTeacher.gender" [disabled]="isViewMode" required>
-                <mat-option value="Male">Male</mat-option>
-                <mat-option value="Female">Female</mat-option>
-                <mat-option value="Other">Other</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Date of Birth</mat-label>
-              <input matInput [matDatepicker]="picker" name="dateOfBirth" [(ngModel)]="selectedTeacher.dateOfBirth"
-                [readonly]="isViewMode" required>
-              <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="isViewMode"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Department</mat-label>
-              <mat-select name="department" [(ngModel)]="selectedTeacher.department" [disabled]="isViewMode" required
-                (selectionChange)="onDepartmentChange($event)">
-                @for (dept of departments; track dept) {
-                <mat-option [value]="dept">{{ dept }}</mat-option>
-                }
-                <mat-option value="+add">+ Add Department</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Phone Number</mat-label>
-              <input matInput name="phone" [(ngModel)]="selectedTeacher.phone" [readonly]="isViewMode">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
-              <input matInput type="email" name="email" [(ngModel)]="selectedTeacher.email" [readonly]="isViewMode">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Joining Date</mat-label>
-              <input matInput [matDatepicker]="joinPicker" name="joiningDate" [(ngModel)]="selectedTeacher.joiningDate"
-                [readonly]="isViewMode" required>
-              <mat-datepicker-toggle matSuffix [for]="joinPicker" [disabled]="isViewMode"></mat-datepicker-toggle>
-              <mat-datepicker #joinPicker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Address</mat-label>
-              <textarea matInput name="address" [(ngModel)]="selectedTeacher.address"
-                [readonly]="isViewMode"></textarea>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Designation</mat-label>
-              <input matInput [(ngModel)]="selectedTeacher.designation" name="designation">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Basic Salary</mat-label>
-              <input matInput type="number" [(ngModel)]="selectedTeacher.basicSalary" name="basicSalary">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Allowance</mat-label>
-              <input matInput type="number" [(ngModel)]="selectedTeacher.allowance" name="allowance">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Deductions</mat-label>
-              <input matInput type="number" [(ngModel)]="selectedTeacher.deductions" name="deductions">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Bank Name</mat-label>
-              <input matInput [(ngModel)]="selectedTeacher.bankName" name="bankName">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Bank Account</mat-label>
-              <input matInput [(ngModel)]="selectedTeacher.bankAccount" name="bankAccount">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>IFSC Code</mat-label>
-              <input matInput [(ngModel)]="selectedTeacher.bankIfsc" name="bankIfsc">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>PAN</mat-label>
-              <input matInput [(ngModel)]="selectedTeacher.pan" name="pan">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>UAN</mat-label>
-              <input matInput [(ngModel)]="selectedTeacher.uan" name="uan">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>PF Number</mat-label>
-              <input matInput [(ngModel)]="selectedTeacher.pfNumber" name="pfNumber">
-            </mat-form-field>
-
-          </div>
-          <div class="modal-actions">
-            @if (!isViewMode) {
-            <button mat-raised-button color="primary" type="submit" [disabled]="!teacherForm.valid">
-              {{ isEditMode ? 'Update' : 'Save' }}
-            </button>
-            }
-            <button mat-button type="button" (click)="closeModal()">Cancel</button>
-          </div>
-        </form>
+<div class="p-4">
+  <form #teacherForm="ngForm" (ngSubmit)="submitForm(teacherForm)" class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Teacher ID *</label>
+        <input type="text" name="teacherId" [(ngModel)]="selectedTeacher.teacherId" required [readonly]="isViewMode"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
       </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">First Name *</label>
+        <input type="text" name="firstName" [(ngModel)]="selectedTeacher.firstName" required [readonly]="isViewMode"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Last Name *</label>
+        <input type="text" name="lastName" [(ngModel)]="selectedTeacher.lastName" required [readonly]="isViewMode"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Gender *</label>
+        <select name="gender" [(ngModel)]="selectedTeacher.gender" [disabled]="isViewMode" required
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+          <option value="" disabled>Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Date of Birth *</label>
+        <input type="date" name="dateOfBirth" [(ngModel)]="selectedTeacher.dateOfBirth" required [readonly]="isViewMode"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Department *</label>
+        <select name="department" [(ngModel)]="selectedTeacher.department" [disabled]="isViewMode" required
+          (change)="onDepartmentChange($event)"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+          <option value="" disabled>Select Department</option>
+          @for (dept of departments; track dept) {
+            <option [value]="dept">{{ dept }}</option>
+          }
+          <option value="+add">+ Add Department</option>
+        </select>
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+        <input type="tel" name="phone" [(ngModel)]="selectedTeacher.phone" [readonly]="isViewMode"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" name="email" [(ngModel)]="selectedTeacher.email" [readonly]="isViewMode"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Joining Date *</label>
+        <input type="date" name="joiningDate" [(ngModel)]="selectedTeacher.joiningDate" required [readonly]="isViewMode"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="md:col-span-2 space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Address</label>
+        <textarea name="address" [(ngModel)]="selectedTeacher.address" [readonly]="isViewMode" rows="2"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white resize-none"></textarea>
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Designation</label>
+        <input type="text" name="designation" [(ngModel)]="selectedTeacher.designation"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Basic Salary</label>
+        <input type="number" name="basicSalary" [(ngModel)]="selectedTeacher.basicSalary"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Allowance</label>
+        <input type="number" name="allowance" [(ngModel)]="selectedTeacher.allowance"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Deductions</label>
+        <input type="number" name="deductions" [(ngModel)]="selectedTeacher.deductions"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Bank Name</label>
+        <input type="text" name="bankName" [(ngModel)]="selectedTeacher.bankName"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Bank Account</label>
+        <input type="text" name="bankAccount" [(ngModel)]="selectedTeacher.bankAccount"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">IFSC Code</label>
+        <input type="text" name="bankIfsc" [(ngModel)]="selectedTeacher.bankIfsc"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">PAN</label>
+        <input type="text" name="pan" [(ngModel)]="selectedTeacher.pan"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">UAN</label>
+        <input type="text" name="uan" [(ngModel)]="selectedTeacher.uan"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">PF Number</label>
+        <input type="text" name="pfNumber" [(ngModel)]="selectedTeacher.pfNumber"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+      </div>
+    </div>
+    
+    <div class="flex justify-end gap-3 pt-4 border-t">
+      @if (!isViewMode) {
+        <button type="submit" [disabled]="!teacherForm.valid"
+          class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          {{ isEditMode ? 'Update' : 'Save' }}
+        </button>
       }
+      <button type="button" (click)="closeModal()"
+        class="px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>}
+
       @if (isDeleteMode) {
-      <div class="delete-confirm">
-        <p>Are you sure you want to delete <strong>{{ selectedTeacher.firstName }} {{ selectedTeacher.lastName
-            }}</strong>?</p>
-        <div class="modal-actions">
-          <button mat-raised-button color="warn" (click)="confirmDelete()">Delete</button>
-          <button mat-button (click)="closeModal()">Cancel</button>
+      <div class="p-5 text-center">
+        <p class="mb-4">Are you sure you want to delete <strong>{{ selectedTeacher.firstName }} {{ selectedTeacher.lastName }}</strong>?</p>
+        <div class="flex justify-center gap-3">
+          <button mat-raised-button color="warn" (click)="confirmDelete()" class="bg-red-600 text-white hover:bg-red-700">Delete</button>
+          <button mat-button (click)="closeModal()" class="text-gray-600 hover:text-gray-800">Cancel</button>
         </div>
       </div>
       }

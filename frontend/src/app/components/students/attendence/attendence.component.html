@@ -30,7 +30,7 @@
       <table class="w-full border-collapse mt-4 min-w-[900px]">
         <thead>
           <tr>
-            <th class="sticky left-0 bg-gray-100 font-bold text-center p-2 border border-gray-300 z-30 min-w-[80px] max-w-[120px] whitespace-nowrap">STUDENT ID</th>
+            <th class="sticky left-0 bg-gray-100 font-bold text-center p-2 border border-gray-300 z-30 min-w-[80px] max-w-[120px] whitespace-nowrap">Admission Id</th>
             <th class="sticky left-[105px] bg-gray-100 font-bold text-center p-2 border border-gray-300 z-30 min-w-[150px] max-w-[220px] whitespace-nowrap after:content-[''] after:absolute after:top-0 after:right-0 after:h-full after:w-0.5 after:bg-gray-200">Name</th>
             @for (day of days; track day) {
               <th class="sticky top-0 bg-gray-100 font-bold text-center p-2 border border-gray-300 z-20">{{ day }}</th>
@@ -40,7 +40,7 @@
         <tbody>
           @for (student of students; track student) {
             <tr>
-              <td class="sticky left-0 bg-white text-center p-2 border border-gray-300 z-10 min-w-[80px] max-w-[120px] whitespace-nowrap">{{ student.Studentid }}</td>
+              <td class="sticky left-0 bg-white text-center p-2 border border-gray-300 z-10 min-w-[80px] max-w-[120px] whitespace-nowrap">{{ student.admissionNumber }}</td>
               <td class="sticky left-[105px] bg-white text-center p-2 border border-gray-300 z-10 min-w-[150px] max-w-[220px] whitespace-nowrap after:content-[''] after:absolute after:top-0 after:right-0 after:h-full after:w-0.5 after:bg-gray-200">{{ student.firstName }} {{ student.lastName }}</td>
               @for (day of days; track day) {
                 <td 

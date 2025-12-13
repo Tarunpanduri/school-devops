@@ -384,7 +384,7 @@ export class AcademicsComponent implements OnInit {
       setTimeout(() => {
         window.print();
         printable.style.display = 'none';
-      }, 200);
+      }, 500);
     }
   }
 

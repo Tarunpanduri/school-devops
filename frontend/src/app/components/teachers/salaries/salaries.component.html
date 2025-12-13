@@ -1,23 +1,17 @@
-<div class="salary-container">
-  <h2>Salaries</h2>
+<div class="p-5">
+  <h2 class="text-2xl font-bold mb-4">Salaries</h2>
 
-  <div class="filters-card">
-    <div class="filter-item">
-      <label>Select Month & Year:</label>
-      <input
-        type="month"
-        [(ngModel)]="selectedMonthYear"
-        (change)="onMonthSelect()"
-      />
+  <div class="flex flex-wrap items-center gap-5 bg-white border border-gray-200 shadow-sm p-3 rounded-lg mb-5">
+    <div class="space-y-1">
+      <label class="block text-sm font-semibold text-gray-700">Select Month & Year</label>
+      <input type="month" [(ngModel)]="selectedMonthYear" (change)="onMonthSelect()" 
+        class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[180px]">
     </div>
 
-    <div class="filter-item">
-      <label>Select Department:</label>
-      <select
-        [(ngModel)]="selectedDepartment"
-        (change)="filterTeachers()"
-        [disabled]="!selectedMonthYear"
-      >
+    <div class="space-y-1">
+      <label class="block text-sm font-semibold text-gray-700">Select Department</label>
+      <select [(ngModel)]="selectedDepartment" (change)="filterTeachers()" [disabled]="!selectedMonthYear"
+        class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white min-w-[180px] disabled:opacity-50 disabled:cursor-not-allowed">
         <option value="All">All</option>
         @for (dept of departments; track dept) {
           <option [value]="dept">{{ dept }}</option>
@@ -25,218 +19,192 @@
       </select>
     </div>
 
-    <div class="filter-item search">
-      <label>Search Teacher:</label>
-      <input
-        type="text"
-        [(ngModel)]="searchTerm"
-        (input)="filterTeachers()"
-        placeholder="Search by ID/Name"
+    <div class="space-y-1">
+      <label class="block text-sm font-semibold text-gray-700">Search Teacher</label>
+      <input type="text" [(ngModel)]="searchTerm" (input)="filterTeachers()" placeholder="Search by ID/Name" 
         [disabled]="!selectedMonthYear"
-      />
+        class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[220px] disabled:opacity-50 disabled:cursor-not-allowed">
     </div>
   </div>
 
   @if (selectedMonthYear && filteredTeachers.length) {
-    <table>
-      <thead>
-        <tr>
-          <th>S.No</th>
-          <th>Teacher ID</th>
-          <th>Full Name</th>
-          <th>Department</th>
-          <th>Designation</th>
-          <th>Joining Date</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (teacher of filteredTeachers; track teacher; let i = $index) {
-          <tr>
-            <td>{{ i + 1 }}</td>
-            <td>{{ teacher.teacherId }}</td>
-            <td>{{ teacher.fullName }}</td>
-            <td>{{ teacher.department }}</td>
-            <td>{{ teacher.designation || 'Teacher' }}</td>
-            <td>{{ teacher.joiningDate | date: 'mediumDate' }}</td>
-            <td class="actions">
-              <i class="fa fa-eye" (click)="viewPayslip(teacher)"></i>
-              <i class="fa fa-edit" (click)="openEditModal(teacher)"></i>
-              <i class="fa fa-download" (click)="downloadPayslip(teacher)"></i>
-            </td>
+    <div class="overflow-x-auto bg-white rounded-lg shadow-sm">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 text-left font-semibold border-b">S.No</th>
+            <th class="p-3 text-left font-semibold border-b">Teacher ID</th>
+            <th class="p-3 text-left font-semibold border-b">Full Name</th>
+            <th class="p-3 text-left font-semibold border-b">Department</th>
+            <th class="p-3 text-left font-semibold border-b">Designation</th>
+            <th class="p-3 text-left font-semibold border-b">Joining Date</th>
+            <th class="p-3 text-left font-semibold border-b">Actions</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (teacher of filteredTeachers; track teacher; let i = $index) {
+            <tr class="border-b hover:bg-gray-50">
+              <td class="p-3">{{ i + 1 }}</td>
+              <td class="p-3">{{ teacher.teacherId }}</td>
+              <td class="p-3">{{ teacher.fullName }}</td>
+              <td class="p-3">{{ teacher.department }}</td>
+              <td class="p-3">{{ teacher.designation || 'Teacher' }}</td>
+              <td class="p-3">{{ teacher.joiningDate | date: 'mediumDate' }}</td>
+              <td class="p-3">
+                <div class="flex gap-3">
+                  <i class="fa fa-eye text-blue-600 cursor-pointer hover:text-blue-800 transition-colors" (click)="viewPayslip(teacher)" title="View"></i>
+                  <i class="fa fa-edit text-green-600 cursor-pointer hover:text-green-800 transition-colors" (click)="openEditModal(teacher)" title="Edit"></i>
+                  <i class="fa fa-download text-purple-600 cursor-pointer hover:text-purple-800 transition-colors" (click)="downloadPayslip(teacher)" title="Download"></i>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
 
   @if (selectedMonthYear && !filteredTeachers.length) {
-    <div>
+    <div class="text-center py-10 text-gray-500">
       <p>No teachers found for selected filters.</p>
     </div>
   }
 
-  <!-- Payslip & Edit Modal -->
   @if (showPayslipModal || showEditModal) {
-    <div class="modal">
-      <div class="modal-content payslip-lg">
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg w-[550px] max-w-full max-h-[85vh] overflow-y-auto shadow-xl p-4 text-sm">
         @if (!showEditModal) {
-          <h2>PAYSLIP {{ selectedMonth | uppercase }} {{ selectedYear }}</h2>
+          <h2 class="text-lg font-bold mb-3 text-center">PAYSLIP {{ selectedMonth | uppercase }} {{ selectedYear }}</h2>
         }
         @if (showEditModal) {
-          <h2>EDIT PAYSLIP {{ selectedMonth | uppercase }} {{ selectedYear }}</h2>
+          <h2 class="text-lg font-bold mb-3 text-center">EDIT PAYSLIP {{ selectedMonth | uppercase }} {{ selectedYear }}</h2>
         }
 
-        <p>
-          {{ schoolProfile?.name || 'School Name' }}<br />
-          {{ schoolProfile?.address }},
-          {{ schoolProfile?.city }},
-          {{ schoolProfile?.state }}
-        </p>
+        <div class="text-center mb-4">
+          <p class="font-semibold text-lg">{{ schoolProfile?.name || 'School Name' }}</p>
+          <p class="text-gray-600 text-sm">
+            {{ schoolProfile?.address }}, {{ schoolProfile?.city }}, {{ schoolProfile?.state }}
+          </p>
+        </div>
 
-        <div class="payslip-section">
-          <div class="row">
-            <strong>Teacher Number:</strong>
-            {{ selectedTeacher?.teacherId }}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div class="space-y-1">
+            <p><span class="font-semibold">Teacher Number:</span> {{ selectedTeacher?.teacherId }}</p>
+            <p><span class="font-semibold">Teacher Name:</span> {{ selectedTeacher?.fullName }}</p>
+            <p><span class="font-semibold">Date Joined:</span> {{ selectedTeacher?.joiningDate | date: 'mediumDate' }}</p>
+            <p><span class="font-semibold">Department:</span> {{ selectedTeacher?.department }}</p>
           </div>
-          <div class="row">
-            <strong>Teacher Name:</strong>
-            {{ selectedTeacher?.fullName }}
-          </div>
-          <div class="row">
-            <strong>Date Joined:</strong>
-            {{ selectedTeacher?.joiningDate | date: 'mediumDate' }}
-          </div>
-          <div class="row">
-            <strong>Department:</strong>
-            {{ selectedTeacher?.department }}
+          <div class="space-y-1">
+            <p><span class="font-semibold">Payment Mode:</span> Bank Transfer</p>
+            <p><span class="font-semibold">Bank:</span> {{ selectedTeacher?.bankName || '-' }}</p>
+            <p><span class="font-semibold">IFSC:</span> {{ selectedTeacher?.bankIfsc || '-' }}</p>
           </div>
         </div>
 
-        <div class="payslip-section">
-          <div class="row">
-            <strong>Payment Mode:</strong>
-            Bank Transfer
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div class="space-y-1">
+            <p><span class="font-semibold">Bank Account:</span> {{ selectedTeacher?.bankAccount || '-' }}</p>
+            <p><span class="font-semibold">PAN:</span> {{ selectedTeacher?.pan || '-' }}</p>
           </div>
-          <div class="row">
-            <strong>Bank:</strong>
-            {{ selectedTeacher?.bankName || '-' }}
-          </div>
-          <div class="row">
-            <strong>IFSC:</strong>
-            {{ selectedTeacher?.bankIfsc || '-' }}
+          <div class="space-y-1">
+            <p><span class="font-semibold">UAN:</span> {{ selectedTeacher?.uan || '-' }}</p>
+            <p><span class="font-semibold">PF Number:</span> {{ selectedTeacher?.pfNumber || '-' }}</p>
           </div>
         </div>
 
-        <div class="payslip-section">
-          <div class="row">
-            <strong>Bank Account:</strong>
-            {{ selectedTeacher?.bankAccount || '-' }}
-          </div>
-          <div class="row">
-            <strong>PAN:</strong>
-            {{ selectedTeacher?.pan || '-' }}
-          </div>
-          <div class="row">
-            <strong>UAN:</strong>
-            {{ selectedTeacher?.uan || '-' }}
-          </div>
-          <div class="row">
-            <strong>PF Number:</strong>
-            {{ selectedTeacher?.pfNumber || '-' }}
-          </div>
-        </div>
+        <h4 class="font-bold border-b pb-1 mb-3">SALARY DETAILS</h4>
 
-        <h4>SALARY DETAILS</h4>
-
-        <!-- VIEW MODE -->
         @if (!showEditModal && selectedTeacher) {
-          <table class="salary-breakup">
-            <tr>
-              <th>EARNINGS</th>
-              <th>AMOUNT</th>
-              <th>DEDUCTIONS</th>
-              <th>AMOUNT</th>
-            </tr>
-            <tr>
-              <td>Basic</td>
-              <td>₹{{ selectedTeacher.basicSalary | number: '1.2-2' }}</td>
-              <td>Other Deductions</td>
-              <td>₹{{ selectedTeacher.deductions | number: '1.2-2' }}</td>
-            </tr>
-            <tr>
-              <td>Allowance</td>
-              <td>₹{{ selectedTeacher.allowance | number: '1.2-2' }}</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="total-row">
-              <td>Total Earnings (A)</td>
-              <td>
-                ₹{{
-                  (selectedTeacher.basicSalary || 0) +
-                    (selectedTeacher.allowance || 0)
-                    | number: '1.2-2'
-                }}
-              </td>
-              <td>Total Deductions (B)</td>
-              <td>
-                ₹{{ selectedTeacher.deductions | number: '1.2-2' }}
-              </td>
-            </tr>
+          <table class="w-full border-collapse ">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="p-2 border text-left">EARNINGS</th>
+                <th class="p-2 border text-right">AMOUNT</th>
+                <th class="p-2 border text-left">DEDUCTIONS</th>
+                <th class="p-2 border text-right">AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="p-2 border">Basic</td>
+                <td class="p-2 border text-right">₹{{ selectedTeacher.basicSalary | number: '1.2-2' }}</td>
+                <td class="p-2 border">Other Deductions</td>
+                <td class="p-2 border text-right">₹{{ selectedTeacher.deductions | number: '1.2-2' }}</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">Allowance</td>
+                <td class="p-2 border text-right">₹{{ selectedTeacher.allowance | number: '1.2-2' }}</td>
+                <td class="p-2 border"></td>
+                <td class="p-2 border"></td>
+              </tr>
+              <tr class="bg-gray-50 font-semibold">
+                <td class="p-2 border">Total Earnings (A)</td>
+                <td class="p-2 border text-right">
+                  ₹{{ (selectedTeacher.basicSalary || 0) + (selectedTeacher.allowance || 0) | number: '1.2-2' }}
+                </td>
+                <td class="p-2 border">Total Deductions (B)</td>
+                <td class="p-2 border text-right">₹{{ selectedTeacher.deductions | number: '1.2-2' }}</td>
+              </tr>
+            </tbody>
           </table>
         }
 
-        <!-- EDIT MODE -->
         @if (showEditModal && selectedTeacher) {
-          <div>
-            <table class="salary-breakup">
-              <tr>
-                <th>Component</th>
-                <th>Amount</th>
-              </tr>
-              <tr>
-                <td>Basic</td>
-                <td>
-                  <input type="number" [(ngModel)]="basicSalary" />
-                </td>
-              </tr>
-              <tr>
-                <td>Allowance</td>
-                <td>
-                  <input type="number" [(ngModel)]="allowance" />
-                </td>
-              </tr>
-              <tr>
-                <td>Deductions</td>
-                <td>
-                  <input type="number" [(ngModel)]="deductions" />
-                </td>
-              </tr>
+          <div class="mb-4">
+            <table class="w-full border-collapse mb-4">
+              <thead>
+                <tr class="bg-gray-50">
+                  <th class="p-2 border text-left">Component</th>
+                  <th class="p-2 border text-left">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-2 border">Basic</td>
+                  <td class="p-2 border">
+                    <input type="number" [(ngModel)]="basicSalary" 
+                      class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  </td>
+                </tr>
+                <tr>
+                  <td class="p-2 border">Allowance</td>
+                  <td class="p-2 border">
+                    <input type="number" [(ngModel)]="allowance" 
+                      class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  </td>
+                </tr>
+                <tr>
+                  <td class="p-2 border">Deductions</td>
+                  <td class="p-2 border">
+                    <input type="number" [(ngModel)]="deductions" 
+                      class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
         }
 
-        <div class="net-pay">
-          <p>
-            <strong>Net Salary Payable ( A - B ):</strong>
-            ₹{{ selectedNetSalary | number: '1.2-2' }}
-          </p>
+        <div class="text-right font-bold text-lg border-t pt-3 mb-4">
+          <p>Net Salary Payable ( A - B ): ₹{{ selectedNetSalary | number: '1.2-2' }}</p>
         </div>
 
-        <p class="notes">
-          <em>
-            Note: All amounts displayed in this payslip are in INR.<br />
-            *This is a system generated salary slip and does not require
-            signature.
-          </em>
-        </p>
+        <div class="text-xs text-gray-500 mb-4">
+          <p><em>Note: All amounts displayed in this payslip are in INR.</em></p>
+          <p><em>*This is a system generated salary slip and does not require signature.</em></p>
+        </div>
 
-        <div class="modal-buttons">
+        <div class="flex justify-end gap-3 pt-4 border-t">
           @if (showEditModal) {
-            <button (click)="savePayslip()">Save</button>
+            <button (click)="savePayslip()" 
+              class="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+              Save
+            </button>
           }
-          <button (click)="closeModal()">Close</button>
+          <button (click)="closeModal()" 
+            class="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors">
+            Close
+          </button>
         </div>
       </div>
     </div>

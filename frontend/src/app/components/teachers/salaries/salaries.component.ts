@@ -161,6 +161,9 @@ export class SalariesComponent implements OnInit {
     this.showPayslipModal = true;
   }
 
+
+  
+
   openEditModal(teacher: TeacherSalary): void {
     this.selectedTeacher = teacher;
     this.basicSalary = Number(teacher.basicSalary || 0);
@@ -197,37 +200,41 @@ export class SalariesComponent implements OnInit {
 
   /* ---------- DOWNLOAD PAYSLIP ---------- */
 
-  async downloadPayslip(teacher: TeacherSalary): Promise<void> {
-    if (!this.selectedMonthYear) return;
+async downloadPayslip(teacher: TeacherSalary): Promise<void> {
+  if (!this.selectedMonthYear) return;
 
-    this.selectedTeacher = teacher;
-    this.showEditModal = false;
-    this.showPayslipModal = true;
+  this.selectedTeacher = teacher;
+  this.showEditModal = false;
+  this.showPayslipModal = true;
 
-    // Give Angular time to render the modal
-    setTimeout(async () => {
-      const modal = document.querySelector(
-        '.modal-content.payslip-lg'
-      ) as HTMLElement;
+  // Wait for modal to render
+  await new Promise(resolve => setTimeout(resolve, 300));
 
-      if (!modal) {
-        console.error('Payslip modal element not found');
-        return;
-      }
-
-      const canvas = await html2canvas(modal);
-      const imgData = canvas.toDataURL('image/png');
-      const doc = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = doc.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      const monthLabel = this.selectedMonth || this.selectedMonthYear;
-      doc.save(`Payslip_${teacher.fullName}_${monthLabel}_${this.selectedYear}.pdf`);
-
-      this.closeModal();
-    }, 200);
+  // NEW: Use the correct selector for your Tailwind modal
+  const modal = document.querySelector('.bg-white.rounded-lg.w-\\[550px\\]') as HTMLElement;
+  
+  if (!modal) {
+    console.error('Payslip modal element not found');
+    this.closeModal();
+    return;
   }
+
+  try {
+    const canvas = await html2canvas(modal);
+    const imgData = canvas.toDataURL('image/png');
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    const monthLabel = this.selectedMonth || this.selectedMonthYear;
+    doc.save(`Payslip_${teacher.fullName}_${monthLabel}_${this.selectedYear}.pdf`);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+  } finally {
+    this.closeModal();
+  }
+}
 
   /* ---------- MODAL UTILS ---------- */
 

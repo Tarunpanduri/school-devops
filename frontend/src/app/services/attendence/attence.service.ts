@@ -7,13 +7,13 @@ export interface Student {
   id: string;
   firstName: string;
   lastName: string;
-  Studentid: string;
+  admissionNumber: string;
   CurrentClass: string | number;
   CurrentSection: string;
 }
 
 export interface AttendanceData {
-  [studentId: string]: {
+  [admissionNumber: string]: {
     [day: number]: boolean | null;
   };
 }

@@ -1,80 +1,102 @@
-<h2 class="page-title">Fee Structure</h2>
+<div class="p-5">
+  <h2 class="text-3xl font-bold mb-4 text-gray-900">Fee Structure</h2>
 
-<div class="filters">
-  <div class="filter-item">
-    <label for="year">Select Year:</label>
-    <select id="year" [(ngModel)]="selectedYear">
-      @for (year of academicYears; track year) {
-        <option [value]="year">{{ year }}</option>
-      }
-    </select>
+  <div class="flex flex-wrap items-end gap-5 bg-gray-50 p-4 rounded-lg border border-gray-300 mb-6">
+    <div class="space-y-2">
+      <label class="block font-medium text-gray-700">Select Year</label>
+      <select id="year" [(ngModel)]="selectedYear" class="px-3 py-2.5 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[200px]">
+        @for (year of academicYears; track year) {
+          <option [value]="year">{{ year }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="space-y-2">
+      <label class="block font-medium text-gray-700">Select Class</label>
+      <select id="class" [(ngModel)]="selectedClass" class="px-3 py-2.5 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[200px]">
+        @for (cls of classes; track cls) {
+          <option [value]="cls">{{ cls }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="flex gap-3 ml-auto">
+      <button (click)="addNewFee()" class="px-5 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+        + Add Fee
+      </button>
+      <button (click)="searchFees()" class="px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors flex items-center gap-2">
+        <i class="fa-solid fa-magnifying-glass"></i> Search
+      </button>
+    </div>
   </div>
 
-  <div class="filter-item">
-    <label for="class">Select Class:</label>
-    <select id="class" [(ngModel)]="selectedClass">
-      @for (cls of classes; track cls) {
-        <option [value]="cls">{{ cls }}</option>
-      }
-    </select>
-  </div>
+  @if (feeList.length > 0) {
+    <h3 class="text-xl font-semibold mb-3 ml-3 text-gray-800">
+      Academic Year {{ selectedYear }} :
+    </h3>
+  }
 
-  <div class="button-group-inline">
-    <button class="add-fee-btn" (click)="addNewFee()">+ Add Fee</button>
-    <button class="search-btn" (click)="searchFees()">
-      <i class="fa-solid fa-magnifying-glass"></i> Search
-    </button>
-  </div>
-</div>
-
-@if (feeList.length > 0) {
-  <h3 class="academic-year-title">
-    Academic Year {{ selectedYear }} :
-  </h3>
-}
-
-@if (feeList.length > 0) {
-  <table class="fee-table">
-    <thead>
-      <tr>
-        <th>S.NO.</th>
-        <th>Fee Category</th>
-        <th>Description</th>
-        <th>Frequency</th>
-        <th>Amount (₹)</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (fee of feeList; track fee; let i = $index) {
-        <tr>
-          @if (editingIndex === i) {
-            <td>{{ i + 1 }}</td>
-            <td><input [(ngModel)]="editedFee.category" /></td>
-            <td><input [(ngModel)]="editedFee.description" /></td>
-            <td><input [(ngModel)]="editedFee.frequency" /></td>
-            <td><input [(ngModel)]="editedFee.amount" /></td>
-            <td class="actions">
-              <button (click)="saveFee(i)">✅</button>
-              <button (click)="cancelEdit()">❌</button>
-            </td>
-          } @else {
-            <td>{{ i + 1 }}</td>
-            <td>{{ fee.category }}</td>
-            <td>{{ fee.description }}</td>
-            <td>{{ fee.frequency }}</td>
-            <td>₹ {{ fee.amount }}</td>
-            <td class="actions">
-              <button (click)="editFee(fee, i)">
-                <i class="fa-solid fa-pen-to-square" style="color: #2563eb; font-size: 18px;"></i>
-              </button>
-              <button (click)="deleteFee(fee)">
-                <i class="fa-solid fa-trash" style="color: red; font-size: 18px;"></i>
-              </button>
-            </td>
+  @if (feeList.length > 0) {
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-8">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 border border-gray-300 text-left font-semibold">S.NO.</th>
+            <th class="p-3 border border-gray-300 text-left font-semibold">Fee Category</th>
+            <th class="p-3 border border-gray-300 text-left font-semibold">Description</th>
+            <th class="p-3 border border-gray-300 text-left font-semibold">Frequency</th>
+            <th class="p-3 border border-gray-300 text-left font-semibold">Amount (₹)</th>
+            <th class="p-3 border border-gray-300 text-left font-semibold">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (fee of feeList; track fee; let i = $index) {
+            <tr class="border-b hover:bg-gray-50">
+              @if (editingIndex === i) {
+                <td class="p-3 border border-gray-300">{{ i + 1 }}</td>
+                <td class="p-3 border border-gray-300">
+                  <input [(ngModel)]="editedFee.category" class="w-full px-2 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </td>
+                <td class="p-3 border border-gray-300">
+                  <input [(ngModel)]="editedFee.description" class="w-full px-2 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </td>
+                <td class="p-3 border border-gray-300">
+                  <input [(ngModel)]="editedFee.frequency" class="w-full px-2 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </td>
+                <td class="p-3 border border-gray-300">
+                  <input type="number" [(ngModel)]="editedFee.amount" class="w-full px-2 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </td>
+                <td class="p-3 border border-gray-300">
+                  <div class="flex gap-2">
+                    <button (click)="saveFee(i)" class="p-2 text-green-600 hover:text-green-800 transition-colors" title="Save">
+                      ✅
+                    </button>
+                    <button (click)="cancelEdit()" class="p-2 text-red-600 hover:text-red-800 transition-colors" title="Cancel">
+                      ❌
+                    </button>
+                  </div>
+                </td>
+              } @else {
+                <td class="p-3 border border-gray-300">{{ i + 1 }}</td>
+                <td class="p-3 border border-gray-300">{{ fee.category }}</td>
+                <td class="p-3 border border-gray-300">{{ fee.description }}</td>
+                <td class="p-3 border border-gray-300">{{ fee.frequency }}</td>
+                <td class="p-3 border border-gray-300 font-medium">₹ {{ fee.amount }}</td>
+                <td class="p-3 border border-gray-300">
+                  <div class="flex gap-3">
+                    <button (click)="editFee(fee, i)" class="p-2 text-blue-600 hover:text-blue-800 transition-colors" title="Edit">
+                      <i class="fa-solid fa-pen-to-square text-lg"></i>
+                    </button>
+                    <button (click)="deleteFee(fee)" class="p-2 text-red-600 hover:text-red-800 transition-colors" title="Delete">
+                      <i class="fa-solid fa-trash text-lg"></i>
+                    </button>
+                  </div>
+                </td>
+              }
+            </tr>
           }
-        </tr>
-      }
-    </tbody>
-  </table>
-}
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
