@@ -1,3 +1,4 @@
+// backend/src/middleware/auth.middleware.js
 const admin = require("../config/firebase");
 const { pool } = require("../db");
 

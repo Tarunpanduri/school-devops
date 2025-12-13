@@ -1,25 +1,24 @@
-// frontend/src/app/services/fees/fee-collection.service.ts
+// src/app/services/fee-collection/fee-collection.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface FeePayment {
   id?: number;
-  studentId: number;
-  academicYear: string;
+  studentId: string;
   feeType: string;
-  amount: number;
-  paymentMode?: string;
-  collectedBy?: string;
-  reference?: string;
+  academicYear: string;
+  paymentMode: 'Cash' | 'UPI' | 'Bank' | string;
   receiptNo?: string;
-  paidOn?: string;
-  createdAt?: string;
+  collectedBy?: string;
+  paidOn?: string | Date;
+  amount: number;
+  reference?: string;
 }
 
 export interface StudentSummary {
-  studentId: number;
+  studentId: string;
   academicYear: string;
   totalFee: number;
   totalPaid: number;
@@ -27,45 +26,58 @@ export interface StudentSummary {
   updatedAt?: string;
 }
 
-@Injectable({ providedIn: 'root' })
+export interface PaymentResponse {
+  payment: any;
+}
+
+export interface PaymentsResponse {
+  payments: any[];
+}
+
+export interface SummaryResponse {
+  summary: StudentSummary;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
 export class FeeCollectionService {
-  private baseUrl = `${environment.apiBaseUrl}/fee-collections`;
+  private apiBaseUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  private authHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token') || '';
-    // If your auth middleware expects "Bearer <token>" do:
-    return new HttpHeaders({ Authorization: token ? `Bearer ${token}` : '' });
-    // If it expects raw token: return new HttpHeaders({ Authorization: token });
-  }
-
-  // Payment history for a student (make sure backend implements GET /)
-  getPayments(studentId: number, academicYear: string): Observable<{ payments: FeePayment[] }> {
+  getPayments(studentId: string, academicYear: string): Observable<PaymentsResponse> {
     const params = new HttpParams()
-      .set('studentId', String(studentId))
+      .set('studentId', studentId)  // No .toString() needed
       .set('academicYear', academicYear);
-    return this.http.get<{ payments: FeePayment[] }>(this.baseUrl, { headers: this.authHeaders(), params });
+
+    return this.http.get<PaymentsResponse>(
+      `${this.apiBaseUrl}/fee-collections`,
+      { params }
+    );
   }
 
-  // Summary (existing backend route)
-  getSummary(studentId: number, academicYear: string): Observable<{ summary: StudentSummary | null }> {
+  getSummary(studentId: string, academicYear: string): Observable<SummaryResponse> {
     const params = new HttpParams()
-      .set('studentId', String(studentId))
+      .set('studentId', studentId)  // No .toString() needed
       .set('academicYear', academicYear);
-    return this.http.get<{ summary: StudentSummary | null }>(`${this.baseUrl}/summary`, { headers: this.authHeaders(), params });
+
+    return this.http.get<SummaryResponse>(
+      `${this.apiBaseUrl}/fee-collections/summary`,
+      { params }
+    );
   }
 
-  // Collect payment (existing backend route)
-  collectPayment(payload: {
-    studentId: number;
-    academicYear: string;
-    feeType: string;
-    amount: number;
-    paymentMode?: string;
-    collectedBy?: string;
-    reference?: string;
-  }): Observable<{ payment: FeePayment }> {
-    return this.http.post<{ payment: FeePayment }>(`${this.baseUrl}/collect`, payload, { headers: this.authHeaders() });
+  collectPayment(paymentData: Partial<FeePayment>): Observable<PaymentResponse> {
+    return this.http.post<PaymentResponse>(
+      `${this.apiBaseUrl}/fee-collections/collect`,
+      paymentData
+    );
+  }
+
+  deletePayment(paymentId: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiBaseUrl}/fee-collections/${paymentId}`
+    );
   }
 }
