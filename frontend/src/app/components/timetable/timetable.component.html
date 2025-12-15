@@ -1,0 +1,74 @@
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-6">Class Timetable</h1>
+
+  <!-- Filters -->
+  <div class="flex gap-6 mb-6">
+    <div>
+      <label class="block mb-1 text-sm font-medium">Class</label>
+      <input
+        [(ngModel)]="selectedClass"
+        class="px-4 py-2 border rounded w-40"
+        placeholder="Class"
+      />
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">Section</label>
+      <input
+        [(ngModel)]="selectedSection"
+        class="px-4 py-2 border rounded w-40"
+        placeholder="Section"
+      />
+    </div>
+
+    <button
+      (click)="loadTimetable()"
+      class="self-end bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+    >
+      Load
+    </button>
+  </div>
+
+  <!-- Timetable -->
+  @if (periods.length) {
+    <div class="overflow-x-auto">
+      <table class="w-full border text-sm">
+        <thead>
+          <tr class="bg-blue-50">
+            <th class="border p-2">Day</th>
+            @for (p of periods; track p) {
+              <th class="border p-2">Period {{ p }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (day of days; track day) {
+            <tr>
+              <td class="border p-2 font-semibold bg-gray-50">
+                {{ day }}
+              </td>
+              @for (p of periods; track p) {
+                <td class="border p-2 text-center">
+                  @if (timetableGrid[day]?.[p]) {
+                    <div class="font-semibold">
+                      {{ timetableGrid[day][p].subject }}
+                    </div>
+                    <div class="text-xs text-gray-600">
+                      {{ timetableGrid[day][p].teacher_name }}
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      {{ timetableGrid[day][p].start_time }} -
+                      {{ timetableGrid[day][p].end_time }}
+                    </div>
+                  } @else {
+                    <span class="text-gray-400">—</span>
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

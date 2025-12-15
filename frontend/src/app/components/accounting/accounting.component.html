@@ -1,0 +1,41 @@
+<div class="p-4">
+    <h2>Accounts Overview</h2>
+    <div class="flex gap-4 my-4">
+      <div class="p-4 border rounded">
+        <div class="text-sm">Total Income</div>
+        <div class="text-2xl font-bold">₹{{summary?.summary?.income || 0 | number:'1.2-2'}}</div>
+      </div>
+      <div class="p-4 border rounded">
+        <div class="text-sm">Total Expense</div>
+        <div class="text-2xl font-bold">₹{{summary?.summary?.expense || 0 | number:'1.2-2'}}</div>
+      </div>
+      <div class="p-4 border rounded">
+        <div class="text-sm">Net</div>
+        <div class="text-2xl font-bold">₹{{((summary?.summary?.income||0) - (summary?.summary?.expense||0)) | number:'1.2-2'}}</div>
+      </div>
+    </div>
+
+    <h3 class="mt-6 mb-2">Account Balances</h3>
+    <div *ngIf="summary">
+      <div *ngFor="let acc of balanceList">
+        <strong>{{acc.name}}</strong>: ₹{{acc.balance | number:'1.2-2'}}
+      </div>
+    </div>
+
+    <h3 class="mt-6 mb-2">Recent Transactions</h3>
+    <table class="w-full border">
+      <thead>
+        <tr><th>Date</th><th>Kind</th><th>Source</th><th>Amount</th><th>Account</th><th>Details</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of transactions">
+          <td>{{t.created_at | date:'medium'}}</td>
+          <td>{{t.kind}}</td>
+          <td>{{t.source}}</td>
+          <td [class.text-red-600]="t.kind==='expense'">₹{{t.amount | number:'1.2-2'}}</td>
+          <td>{{t.account_name}}</td>
+          <td><pre style="white-space:pre-wrap">{{ t.details | json }}</pre></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

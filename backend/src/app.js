@@ -12,6 +12,8 @@ const teachersRoutes = require("./routes/teachers.routes");
 const teachersAttendanceRoutes = require('./routes/teachersAttendence.routes');
 const salariesRoutes = require("./routes/salaries.routes");
 const feeCollectionsRoutes = require("./routes/fee-collection.routes");
+const accountsRoutes = require('./routes/accounting.routes');
+const timetableRoutes = require("./routes/timetable.routes");
 
 
 
@@ -34,6 +36,9 @@ app.use("/teachers", teachersRoutes);
 app.use("/teachers-attendance", teachersAttendanceRoutes);
 app.use("/salaries", salariesRoutes);
 app.use("/fee-collections", feeCollectionsRoutes);
+app.use('/api/accounts', accountsRoutes);
+app.use("/timetable", timetableRoutes);
+
 
 
 

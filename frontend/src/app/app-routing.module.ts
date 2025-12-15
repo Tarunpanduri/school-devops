@@ -12,12 +12,13 @@ import { HomeworkComponent } from './components/students/homework/homework.compo
 import { StudentsInfoComponent } from './components/students/students-info/students-info.component';  
 import { FeeStructureComponent } from './components/students/fee-structure/fee-structure.component';
 import { SalariesComponent } from './components/teachers/salaries/salaries.component';
-// import { CalendarComponent } from './components/calendar/calendar.component';
+import { TimetableComponent } from './components/timetable/timetable.component';
 // import { TimeTableComponent } from './components/time-table/time-table.component';
 // import { MessagingComponent } from './components/messaging/messaging.component';
 // import { TransportComponent } from './components/transport/transport.component';
 import { PaymentsComponent } from './components/payments/payments.component';
 import { FeeCollectionComponent } from './components/fee-collection/fee-collection.component';
+import { AccountingComponent } from './components/accounting/accounting.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -42,7 +43,9 @@ const routes: Routes = [
       // { path: 'Transport', component: TransportComponent},
       { path: 'payments', component: PaymentsComponent},
       { path: 'teachers-info', component: TeachersInfoComponent },
-      { path: 'fee-collection', component: FeeCollectionComponent }
+      { path: 'fee-collection', component: FeeCollectionComponent },
+      { path: 'accounting', component: AccountingComponent },
+      { path: 'timetable', component: TimetableComponent }
     ]
   }
 ];

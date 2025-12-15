@@ -40,6 +40,8 @@ import { environment } from '../environments/environment';
 import { AuthInterceptor } from './interceptors/auth-interceptor.service';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FeeCollectionComponent } from './components/fee-collection/fee-collection.component';
+import { AccountingComponent } from './components/accounting/accounting.component';
+import { TimetableComponent } from './components/timetable/timetable.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,8 @@ import { FeeCollectionComponent } from './components/fee-collection/fee-collecti
     PaymentsComponent,
     DashboardComponent,
     FeeCollectionComponent,
+    AccountingComponent,
+    TimetableComponent,
   ],
   imports: [
     BrowserModule,
