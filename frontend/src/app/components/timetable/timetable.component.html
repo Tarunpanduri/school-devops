@@ -47,19 +47,23 @@
               <td class="border p-2 font-semibold bg-gray-50">
                 {{ day }}
               </td>
+
               @for (p of periods; track p) {
                 <td class="border p-2 text-center">
                   @if (timetableGrid[day]?.[p]) {
                     <div class="font-semibold">
                       {{ timetableGrid[day][p].subject }}
                     </div>
+
                     <div class="text-xs text-gray-600">
-                      {{ timetableGrid[day][p].teacher_name }}
+                      {{ timetableGrid[day][p].teacher }}
                     </div>
-                    <div class="text-xs text-gray-500">
-                      {{ timetableGrid[day][p].start_time }} -
-                      {{ timetableGrid[day][p].end_time }}
-                    </div>
+
+                    @if (timetableGrid[day][p].room) {
+                      <div class="text-xs text-gray-500">
+                        Room: {{ timetableGrid[day][p].room }}
+                      </div>
+                    }
                   } @else {
                     <span class="text-gray-400">—</span>
                   }
